@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">FizzGoal</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_goal">New Goal</string>
+    <string name="tite_goal">Title of Goal</string>
+    <string name="amount_n_currency">Amount &amp; Currency</string>
+    <string name="breakdown">Breakdown</string>
+    <string name="d_payments">Daily Payments</string>
+    <string name="w_payments">Weekly Payments</string>
+    <string name="m_payments">Monthly Payments</string>
+    <string name="d_paymentsL">Daily Payments:</string>
+    <string name="w_paymentsL">Weekly Payments:</string>
+    <string name="m_paymentsL">Monthly Payments:</string>
+    <string name="g_deadline">Goal Deadline</string>
+    <string name="amount">Amount:</string>
+    <string name="date">Date:</string>
+    <string name="title_activity_goal_dis">My Goals</string>
+    <string name="title_activity_goal_alt">Achievements</string>
+</resources>

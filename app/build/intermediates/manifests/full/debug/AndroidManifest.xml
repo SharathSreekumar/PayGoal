@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.shreekumar.mybillfizz2"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="22" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/pointed_hat"
+        android:label="@string/app_name"
+        android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" >
+        <activity
+            android:name="com.example.shreekumar.mybillfizz2.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.shreekumar.mybillfizz2.GoalDisActivity"
+            android:label="@string/title_activity_goal_dis" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.shreekumar.mybillfizz2.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.shreekumar.mybillfizz2.GoalActivity"
+            android:label="@string/title_activity_goal" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
+        </activity>
+        <activity
+            android:name="com.example.shreekumar.mybillfizz2.GoalAltActivity"
+            android:label="@string/title_activity_goal_alt" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
+        </activity>
+    </application>
+
+</manifest>

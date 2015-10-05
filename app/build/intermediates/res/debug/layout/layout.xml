@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:translationZ="5dp"
+        android:id="@+id/relativeLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/goalView1"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/amount"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp"
+            android:gravity="left"
+            android:id="@+id/amountView1"
+            android:layout_below="@+id/goalView1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/dateView1"
+            android:layout_toStartOf="@+id/dateView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="-"
+            android:layout_marginLeft="20dp"
+            android:gravity="left"
+            android:textSize="18sp"
+            android:id="@+id/amountView2"
+            android:layout_below="@+id/amountView1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/amountView1"
+            android:layout_alignEnd="@+id/amountView1" />
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/date"
+            android:id="@+id/dateView1"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_below="@+id/goalView1"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/amountView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="-"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:id="@+id/dateView2"
+            android:layout_alignBottom="@+id/amountView2"
+            android:layout_alignLeft="@+id/dateView1"
+            android:layout_alignRight="@+id/dateView1"
+            android:layout_alignEnd="@+id/dateView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/d_paymentsL"
+            android:id="@+id/dailyView1"
+            android:textSize="17sp"
+            android:height="30dp"
+            android:gravity="center_vertical|right"
+            android:layout_below="@+id/amountView2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/monthView1"
+            android:layout_alignEnd="@+id/monthView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:height="30dp"
+            android:textSize="17sp"
+            android:gravity="center_vertical|right"
+            android:text="@string/w_paymentsL"
+            android:id="@+id/weekView1"
+            android:layout_below="@+id/dailyView1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/dailyView1"
+            android:layout_alignEnd="@+id/dailyView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/m_paymentsL"
+            android:id="@+id/monthView1"
+            android:layout_below="@+id/weekView1"
+            android:textSize="17sp"
+            android:height="30dp"
+            android:gravity="center_vertical|right"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="-"
+            android:id="@+id/dailyView2"
+            android:gravity="center"
+            android:width="120dp"
+            android:textSize="17sp"
+            android:layout_alignRight="@+id/dateView1"
+            android:layout_alignEnd="@+id/dateView1"
+            android:layout_above="@+id/weekView1"
+            android:layout_alignLeft="@+id/weekView2"
+            android:layout_alignStart="@+id/weekView2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="-"
+            android:textSize="17sp"
+            android:id="@+id/weekView2"
+            android:gravity="center"
+            android:width="120dp"
+            android:layout_above="@+id/monthView1"
+            android:layout_alignRight="@+id/dateView1"
+            android:layout_alignEnd="@+id/dateView1"
+            android:layout_below="@+id/dailyView2"
+            android:layout_alignLeft="@+id/monthView2"
+            android:layout_alignStart="@+id/monthView2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="-"
+            android:textSize="17sp"
+            android:gravity="center"
+            android:width="120dp"
+            android:id="@+id/monthView2"
+            android:layout_alignBottom="@+id/monthView1"
+            android:layout_below="@+id/weekView2"
+            android:layout_alignRight="@+id/dateView1"
+            android:layout_alignEnd="@+id/dateView1"
+            android:layout_toRightOf="@+id/weekView1"
+            android:layout_toEndOf="@+id/weekView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:width="120dp"
+            android:paddingTop="10dp"
+            android:text="- days left"
+            android:id="@+id/daysLeft"
+            android:layout_below="@+id/monthView1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <!--style="?android:attr/progressBarStyleHorizontal"
+            -->
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:minHeight="5dp"
+            android:id="@+id/progressBarGoal"
+            style="@style/CustomProgressBarHorizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_below="@+id/daysLeft"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/dateView2"
+            android:layout_alignEnd="@+id/dateView2" />
+
+        <!--
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payment"
+            android:id="@+id/btnPayment"
+            android:layout_below="@+id/progressBarGoal"
+            android:layout_alignLeft="@+id/amountView2"
+            android:layout_alignStart="@+id/amountView2" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expense"
+            android:id="@+id/btnExpense"
+            android:layout_below="@+id/progressBarGoal"
+            android:layout_toRightOf="@+id/monthView1"
+            android:layout_toEndOf="@+id/monthView1" />
+-->
+    </RelativeLayout>
+
+
+</RelativeLayout>
+<!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/layout/layout.xml -->
