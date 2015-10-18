@@ -1,16 +1,70 @@
 package com.example.shreekumar.mybillfizz2;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+//For Goal Payment
 public class GoalAltActivity extends AppCompatActivity {
+
+    String currencyG;
+    TextView GoalInfoTitle, Payment, Expense, Savings;
+    public static String GoalId, amount;
+    private DbHelperGoal iHelper;
+    private SQLiteDatabase iDataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_alt);
+
+        //Dropdown currency
+        Spinner spinner = (Spinner) findViewById(R.id.spinnerPay1);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.currency, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        Toast.makeText(getApplication(), (String) parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+                        currencyG = "₹";
+                        break;
+                    case 1:
+                        Toast.makeText(getApplication(), (String) parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+                        currencyG = "\u20ac";
+                        break;
+                    case 2:
+                        Toast.makeText(getApplication(), (String) parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+                        currencyG = "\u00a3";
+                        break;
+                    case 3:
+                        Toast.makeText(getApplication(), (String) parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+                        currencyG = "¥";
+                        break;
+                    case 4:
+                        Toast.makeText(getApplication(), (String) parent.getSelectedItem(), Toast.LENGTH_SHORT).show();
+                        currencyG = "$";
+                        break;
+                    default:
+                        Toast.makeText(getApplication(), "No such choice", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
     }
 
     @Override

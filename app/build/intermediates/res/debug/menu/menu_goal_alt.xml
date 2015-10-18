@@ -4,5 +4,7 @@
     tools:context="com.example.shreekumar.mybillfizz2.GoalAltActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/save_goal_Pay" android:title="Save Goal"
+        app:showAsAction="always" android:icon="@mipmap/save" />
 </menu>
 <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/menu/menu_goal_alt.xml -->

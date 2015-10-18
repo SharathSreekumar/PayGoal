@@ -12,10 +12,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -34,6 +37,7 @@ public class GoalActivity extends AppCompatActivity {
     Button dateG, cal, save1;
     String dayG,monthG,yearG;
     EditText goalG,amountG;
+    String currencyG;
     CheckBox dayBreakG,weekBreakG,monthBreakG;
     Boolean dateB,weekB,monthB;
 
@@ -42,6 +46,40 @@ public class GoalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal);
 
+        //Dropdown currency
+        Spinner spinner = (Spinner) findViewById(R.id.spinner1);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.currency, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+                    case 0:
+                        Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
+                        currencyG = "₹";
+                        break;
+                    case 1:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
+                        currencyG = "\u20ac";
+                        break;
+                    case 2:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
+                        currencyG = "\u00a3";
+                        break;
+                    case 3:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
+                        currencyG = "¥";
+                        break;
+                    case 4:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
+                        currencyG = "$";
+                        break;
+                    default:Toast.makeText(getApplication(),"No such choice",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -105,10 +143,13 @@ public class GoalActivity extends AppCompatActivity {
         values.put(DbHelperGoal.DAY, dayG.toString());
         values.put(DbHelperGoal.MONTH, monthG.toString());
         values.put(DbHelperGoal.YEAR, yearG.toString());
+        values.put(DbHelperGoal.CURRENCY,currencyG.toString());
         values.put(DbHelperGoal.AMOUNT,amountG.getText().toString());
         values.put(DbHelperGoal.BREAKDOWN_DAY,dateB.toString());
         values.put(DbHelperGoal.BREAKDOWN_WEEK,weekB.toString());
         values.put(DbHelperGoal.BREAKDOWN_MONTH, monthB.toString());
+        values.put(DbHelperGoal.ALT_PAYMENT,String.valueOf(0));
+        values.put(DbHelperGoal.ALT_EXPENSE,String.valueOf(0));
 
         System.out.println("");
         if(isUpdate)

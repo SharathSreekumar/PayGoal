@@ -28,13 +28,14 @@ public class GoalAdapter  extends BaseAdapter {
     private ArrayList<String> month;
     private ArrayList<String> year;
     private ArrayList<String> amount;
-    private ArrayList<String> breakdownDay;
-    private ArrayList<String> breakdownWeek;
-    private ArrayList<String> breakdownMonth;
+    //private ArrayList<String> breakdownDay;
+    //private ArrayList<String> breakdownWeek;
+    //private ArrayList<String> breakdownMonth;
     private ArrayList<String> daysLeftGoal;
+    private ArrayList<Integer> progressValue;
 
     // receives values from GoalDisActivity.java
-    public GoalAdapter(Context c, ArrayList<String> gId,ArrayList<String> gGoal, ArrayList<String> gDay, ArrayList<String> gMonth, ArrayList<String> gYear, ArrayList<String> gDate, ArrayList<String> gAmount, ArrayList<String> gBreakDay, ArrayList<String> gBreakWeek, ArrayList<String> gBreakMonth, ArrayList<String> gDaysLeft) {
+    public GoalAdapter(Context c, ArrayList<String> gId,ArrayList<String> gGoal, ArrayList<String> gDay, ArrayList<String> gMonth, ArrayList<String> gYear, ArrayList<String> gDate, ArrayList<String> gAmount, ArrayList<String> gDaysLeft,ArrayList<Integer> gProgressValue) {// ArrayList<String> gBreakDay, ArrayList<String> gBreakWeek, ArrayList<String> gBreakMonth, ArrayList<String> gDaysLeft) {
         this.mContext = c;
 
         this.id = gId;
@@ -44,10 +45,11 @@ public class GoalAdapter  extends BaseAdapter {
         this.year = gYear;
         this.date = gDate;
         this.amount = gAmount;
-        this.breakdownDay = gBreakDay;
-        this.breakdownWeek = gBreakWeek;
-        this.breakdownMonth = gBreakMonth;
+        //this.breakdownDay = gBreakDay;
+        //this.breakdownWeek = gBreakWeek;
+        //this.breakdownMonth = gBreakMonth;
         this.daysLeftGoal = gDaysLeft;
+        this.progressValue = gProgressValue;
     }
 
     public customButtonListener customListener;
@@ -87,9 +89,9 @@ public class GoalAdapter  extends BaseAdapter {
             //mHolder.g_date = (TextView) child.findViewById(R.id.dateView2);
             mHolder.g_date = (TextView) child.findViewById(R.id.dateView2);
             mHolder.g_amount = (TextView) child.findViewById(R.id.amountView2);
-            mHolder.g_daybreak = (TextView) child.findViewById(R.id.dailyView2);
-            mHolder.g_weekbreak = (TextView) child.findViewById(R.id.weekView2);
-            mHolder.g_monthbreak = (TextView) child.findViewById(R.id.monthView2);
+            //mHolder.g_daybreak = (TextView) child.findViewById(R.id.dailyView2);
+            //mHolder.g_weekbreak = (TextView) child.findViewById(R.id.weekView2);
+            //mHolder.g_monthbreak = (TextView) child.findViewById(R.id.monthView2);
             mHolder.g_daysLeft = (TextView) child.findViewById(R.id.daysLeft);
             mHolder.progressGoal = (ProgressBar) child.findViewById(R.id.progressBarGoal);
             child.setTag(mHolder);
@@ -101,13 +103,14 @@ public class GoalAdapter  extends BaseAdapter {
         mHolder.g_date.setText(date.get(pos));
         //mHolder.g_day.setText(day.get(pos));
         mHolder.g_amount.setText(amount.get(pos));
-        mHolder.g_daybreak.setText(breakdownDay.get(pos));
-        mHolder.g_weekbreak.setText(breakdownWeek.get(pos));
-        mHolder.g_monthbreak.setText(breakdownMonth.get(pos));
+        //mHolder.g_daybreak.setText(breakdownDay.get(pos));
+        //mHolder.g_weekbreak.setText(breakdownWeek.get(pos));
+        //mHolder.g_monthbreak.setText(breakdownMonth.get(pos));
         mHolder.g_daysLeft.setText(daysLeftGoal.get(pos));
         //setting prgress value
-        mHolder.progressGoal.setProgress(50);
-
+        mHolder.progressGoal.setProgress(progressValue.get(pos));
+        return child;
+    }
         //For button
         /*LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.layout, parent, false);
@@ -125,9 +128,9 @@ public class GoalAdapter  extends BaseAdapter {
                 }
             }
         });
-        */
+
         return child;
-    }
+    }*/
 
     public class Holder {
         TextView g_Id;
@@ -137,9 +140,9 @@ public class GoalAdapter  extends BaseAdapter {
         TextView g_year;
         TextView g_goal;
         TextView g_amount;
-        TextView g_daybreak;
-        TextView g_weekbreak;
-        TextView g_monthbreak;
+        //TextView g_daybreak;
+        //TextView g_weekbreak;
+        //TextView g_monthbreak;
         TextView g_daysLeft;
         Button paymentBtn;
         Button expenseBtn;

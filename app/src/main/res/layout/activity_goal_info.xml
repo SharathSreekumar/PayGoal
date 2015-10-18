@@ -1,0 +1,221 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.shreekumar.mybillfizz2.GoalInfoActivity">
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/scrollViewInfo">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/GoalInfoTitle1"
+                android:gravity="center|center_vertical"
+                android:textSize="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Savings Progress"
+                android:id="@+id/SubTitleInfoSave1"
+                android:layout_marginTop="15dp"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:layout_below="@+id/GoalInfoTitle1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Payments:"
+                android:textSize="18dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/PaymentsInfo1"
+                android:layout_below="@+id/SubTitleInfoSave1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Expense:"
+                android:id="@+id/ExpenseInfo1"
+                android:textSize="18dp"
+                android:gravity="right"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/PaymentsInfo1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignRight="@+id/PaymentsInfo1"
+                android:layout_alignEnd="@+id/PaymentsInfo1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="-"
+                android:gravity="left"
+                android:layout_marginLeft="20dp"
+                android:textSize="23dp"
+                android:id="@+id/PaymentsInfo2"
+                android:layout_above="@+id/ExpenseInfo1"
+                android:layout_toRightOf="@+id/PaymentsInfo1"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="-"
+                android:gravity="left"
+                android:textSize="23dp"
+                android:id="@+id/ExpenseInfo2"
+                android:layout_alignBottom="@+id/ExpenseInfo1"
+                android:layout_toRightOf="@+id/ExpenseInfo1"
+                android:layout_alignRight="@+id/GoalInfoTitle1"
+                android:layout_alignEnd="@+id/GoalInfoTitle1" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:id="@+id/progressBarInfo1"
+                android:layout_below="@+id/ExpenseInfo1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Savings:"
+                android:textSize="18dp"
+                android:gravity="right"
+                android:layout_marginTop="18dp"
+                android:id="@+id/SavingsInfo1"
+                android:layout_below="@+id/progressBarInfo1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignRight="@+id/ExpenseInfo1"
+                android:layout_alignEnd="@+id/ExpenseInfo1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="-"
+                android:gravity="left"
+                android:textSize="23dp"
+                android:id="@+id/SavingsInfo2"
+                android:layout_alignBottom="@+id/SavingsInfo1"
+                android:layout_alignRight="@+id/progressBarInfo1"
+                android:layout_alignEnd="@+id/progressBarInfo1"
+                android:layout_alignLeft="@+id/PaymentsInfo2"
+                android:layout_alignStart="@+id/PaymentsInfo2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Payments Needed To Meet Goal"
+                android:id="@+id/SubTitleInfoPayment1"
+                android:layout_marginTop="25dp"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:layout_below="@+id/SavingsInfo1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="10dp"
+                android:text="- / Daily"
+                android:textSize="22dp"
+                android:id="@+id/dailyInfoView1"
+                android:layout_below="@+id/SubTitleInfoPayment1"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="10dp"
+                android:text="- / Weekly"
+                android:textSize="22dp"
+                android:id="@+id/weeklyInfoView1"
+                android:layout_below="@+id/dailyInfoView1"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="10dp"
+                android:text="- / Monthly"
+                android:textSize="22dp"
+                android:id="@+id/monthlyInfoView1"
+                android:layout_below="@+id/weeklyInfoView1"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Deadline"
+                android:id="@+id/SubTitleInfoDeadline1"
+                android:layout_marginTop="25dp"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:layout_below="@+id/monthlyInfoView1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignRight="@+id/SubTitleInfoPayment1"
+                android:layout_alignEnd="@+id/SubTitleInfoPayment1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="- days until dd-mm-yyyy"
+                android:layout_marginTop="10dp"
+                android:textSize="22dp"
+                android:id="@+id/deadlineInfo1"
+                android:layout_below="@+id/SubTitleInfoDeadline1"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </ScrollView>
+    </RelativeLayout>

@@ -2,32 +2,11 @@
 <items version="2" >
 
     <item
-        jar="D:\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.1.1\support-annotations-22.1.1.jar"
+        jar="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.1.1\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="01d051a6bfb1218b1db2d3a5af0480ac2c25c42a">
-        <dex dex="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\pre-dexed\debug\support-annotations-22.1.1-2ef664910a9b1d11909711714c2671029fd040ed.jar" />
-    </item>
-    <item
-        jar="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
-        <dex dex="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\pre-dexed\debug\classes-cfb6c3600892afab92014c2f7f2d51c510ae2d0d.jar" />
-    </item>
-    <item
-        jar="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.1\jars\libs\internal_impl-22.1.1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
-        <dex dex="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\pre-dexed\debug\internal_impl-22.1.1-c8df53a36090325d7f65c4f9043e93e2a2177a73.jar" />
-    </item>
-    <item
-        jar="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.1\jars\classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
-        <dex dex="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\pre-dexed\debug\classes-957cee602012001a3c961ce62a0802d3c2cf6182.jar" />
+        sha1="22886d910315028a2b34b1ba068c265534ade87a">
+        <dex dex="C:\Users\Shreekumar\AndroidStudioProjects\MyBillFizz2\app\build\intermediates\pre-dexed\debug\classes-5fdd4dbc65f914abe665cffc1eb894f9f102f6f8.jar" />
     </item>
 
 </items>

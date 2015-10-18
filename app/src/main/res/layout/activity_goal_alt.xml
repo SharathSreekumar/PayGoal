@@ -74,21 +74,25 @@
         android:layout_alignRight="@+id/goalTitleAlt"
         android:layout_alignEnd="@+id/goalTitleAlt" />
 
+    <Spinner
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:id="@+id/spinnerPay1"
+        android:layout_below="@+id/amountGoalAlt1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/payAmount"
-        android:gravity="fill"
         android:inputType="number"
-        android:ems="20"
-        android:layout_marginTop="10sp"
-        android:textSize="25dp"
-        android:hint="Payment Amount"
-        android:layout_below="@+id/amountGoalAlt1"
+        android:ems="10"
+        android:gravity="right"
+        android:id="@+id/PaymentEnter1"
+        android:layout_alignBottom="@+id/spinnerPay1"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignTop="@+id/spinnerPay1" />
 
 
 </RelativeLayout>

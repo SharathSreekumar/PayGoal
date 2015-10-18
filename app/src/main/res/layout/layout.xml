@@ -4,7 +4,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="140dp"
         android:layout_centerHorizontal="true"
         android:translationZ="5dp"
         android:id="@+id/relativeLayout">
@@ -42,15 +42,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="-"
-            android:layout_marginLeft="20dp"
             android:gravity="left"
             android:textSize="18sp"
             android:id="@+id/amountView2"
             android:layout_below="@+id/amountView1"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_alignRight="@+id/amountView1"
-            android:layout_alignEnd="@+id/amountView1" />
+            android:layout_alignEnd="@+id/amountView1"
+            android:layout_alignLeft="@+id/amountView1"
+            android:layout_alignStart="@+id/amountView1" />
 
         <TextView
             android:layout_width="150dp"
@@ -78,7 +77,7 @@
             android:layout_alignRight="@+id/dateView1"
             android:layout_alignEnd="@+id/dateView1" />
 
-        <TextView
+<!--        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -167,20 +166,23 @@
             android:layout_alignEnd="@+id/dateView1"
             android:layout_toRightOf="@+id/weekView1"
             android:layout_toEndOf="@+id/weekView1" />
-
+-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="15sp"
-            android:gravity="center"
+            android:gravity="left"
             android:width="120dp"
             android:paddingTop="10dp"
+            android:paddingLeft="10dp"
             android:text="- days left"
             android:id="@+id/daysLeft"
-            android:layout_below="@+id/monthView1"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_below="@+id/amountView2"
+            android:layout_alignLeft="@+id/amountView2"
+            android:layout_alignStart="@+id/amountView2"
+            android:layout_alignRight="@+id/amountView2"
+            android:layout_alignEnd="@+id/amountView2" />
 
         <!--style="?android:attr/progressBarStyleHorizontal"
             -->
@@ -220,6 +222,4 @@
             android:layout_toEndOf="@+id/monthView1" />
 -->
     </RelativeLayout>
-
-
 </RelativeLayout>

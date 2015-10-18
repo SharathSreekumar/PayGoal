@@ -1,6 +1,9 @@
 package com.example.shreekumar.mybillfizz2;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,17 +12,21 @@ import android.os.Handler;
 import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -36,12 +43,15 @@ import java.util.concurrent.TimeUnit;
 // This file calls "GoalAdapter.java"
 public class GoalDisActivity extends AppCompatActivity {
 
-    static final int DATE_DIALOG_ID = 0;
+    static final int PAY_DIALOG_ID = 0;
     private int currentYear, currentMonth, currentDay;
     PopupWindow pwindo;
+    AlertDialog alert;
+    String currencyG, moneyValue;
     GoalAdapter goaladpt;
     private DbHelperGoal gHelper;
     private SQLiteDatabase dataBase;
+    EditText PayValue, ExpValue;
 
     private ArrayList<String> keyId = new ArrayList<String>();
     private ArrayList<String> goalTitle = new ArrayList<String>();
@@ -50,10 +60,11 @@ public class GoalDisActivity extends AppCompatActivity {
     private ArrayList<String> month = new ArrayList<String>();
     private ArrayList<String> year = new ArrayList<String>();
     private ArrayList<String> amount = new ArrayList<String>();
-    private ArrayList<String> dailyBreak = new ArrayList<String>();
-    private ArrayList<String> weeklyBreak = new ArrayList<String>();
-    private ArrayList<String> monthlyBreak = new ArrayList<String>();
+    //private ArrayList<String> dailyBreak = new ArrayList<String>();
+    //private ArrayList<String> weeklyBreak = new ArrayList<String>();
+    //private ArrayList<String> monthlyBreak = new ArrayList<String>();
     private ArrayList<String> daysLeftGoal = new ArrayList<String>();
+    private ArrayList<Integer> progressValue = new ArrayList<Integer>();
 
     public ListView goalList2;
 
@@ -75,7 +86,7 @@ public class GoalDisActivity extends AppCompatActivity {
 
         //goaladpt.setCustomButtonListener(GoalDisActivity.this);
 
-        ImageButton tri = (ImageButton)findViewById(R.id.imageButtonAdd);
+        ImageButton tri = (ImageButton) findViewById(R.id.imageButtonAdd);
         tri.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,69 +96,20 @@ public class GoalDisActivity extends AppCompatActivity {
             }
         });
 
-        // on click on list data
-        goalList2.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3){
-                build = new AlertDialog.Builder(GoalDisActivity.this);
-                build.setTitle("Make a selection");
-                build.setMessage("What do you want to select ?");
-                // positive for payment
-                build.setPositiveButton("Payment", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Toast.makeText(getApplicationContext(), "Display Payment data", Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(getApplicationContext(), GoalAltActivity.class);
+        goalList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
+                Intent i = new Intent(getApplicationContext(), GoalInfoActivity.class);
+                i.putExtra("Goal", goalTitle.get(arg2));
+                i.putExtra("Date", date.get(arg2));
+                i.putExtra("Amount", amount.get(arg2));
+                //i.putExtra("DailyBreakDown", dailyBreak.get(arg2));
+                //i.putExtra("WeeklyBreakDown", weeklyBreak.get(arg2));
+                //i.putExtra("MonthlyBreakDown", monthlyBreak.get(arg2));
+                i.putExtra("DaysLeft", daysLeftGoal.get(arg2));
+                i.putExtra("ID", keyId.get(arg2));
 
-                        i.putExtra("Goal", goalTitle.get(arg2));
-                        i.putExtra("Date", date.get(arg2));
-                        i.putExtra("Amount", amount.get(arg2));
-                        i.putExtra("DailyBreakDown", dailyBreak.get(arg2));
-                        i.putExtra("WeeklyBreakDown", weeklyBreak.get(arg2));
-                        i.putExtra("MonthlyBreakDown", monthlyBreak.get(arg2));
-                        i.putExtra("DaysLeft", daysLeftGoal.get(arg2));
-                        i.putExtra("ID", keyId.get(arg2));
-
-                        i.putExtra("update", true);
-                        startActivity(i);
-                        dialog.cancel();
-                    }
-                });
-                //neutral for expense
-                build.setNeutralButton("Expense", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), "Display Expense data", Toast.LENGTH_LONG).show();
-                        dialog.cancel();
-                    }
-                });
-                //-ve for delete
-                build.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Toast.makeText(getApplicationContext(), "Delete data", Toast.LENGTH_LONG).show();
-                        build = new AlertDialog.Builder(GoalDisActivity.this);
-                        build.setTitle("Delete " + goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2));
-                        build.setMessage("Do you want to delete ?");
-                        build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                Toast.makeText(getApplicationContext(), goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2) + " is deleted.", Toast.LENGTH_LONG).show();
-
-                                dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
-                                displayData();
-                                dialog.cancel();
-                            }
-                        });
-                        build.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        AlertDialog alert = build.create();
-                        alert.show();
-                        dialog.cancel();
-                    }
-                });
-
-                AlertDialog alert = build.create();
-                alert.show();
+                i.putExtra("update", true);
+                startActivity(i);
             }
         });
 
@@ -162,33 +124,86 @@ public class GoalDisActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         switch (item) {
-                            case 0://Toast.makeText(getApplication(),"Payment",Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(getApplicationContext(), GoalAltActivity.class);
-
-                                i.putExtra("Goal", goalTitle.get(arg2));
-                                i.putExtra("Date", date.get(arg2));
-                                i.putExtra("Amount", amount.get(arg2));
-                                i.putExtra("DailyBreakDown", dailyBreak.get(arg2));
-                                i.putExtra("WeeklyBreakDown", weeklyBreak.get(arg2));
-                                i.putExtra("MonthlyBreakDown", monthlyBreak.get(arg2));
-                                i.putExtra("DaysLeft", daysLeftGoal.get(arg2));
-                                i.putExtra("ID", keyId.get(arg2));
-
-                                i.putExtra("update", true);
-                                startActivity(i);
+                            case 0:
+                                LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
+                                View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
+                                build = new AlertDialog.Builder(GoalDisActivity.this);
+                                build.setTitle("Payment");
+                                build.setMessage("Please Enter payment amount");
+                                build.setView(promptsPaymentView);
+                                PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
+                                //PayValue.isFocused();
+                                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dataBase = gHelper.getWritableDatabase();
+                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2), null);
+                                        if (mCursor.moveToFirst()) {
+                                            do {
+                                                moneyValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT));
+                                            } while (mCursor.moveToNext());
+                                        }
+                                        float val = Float.valueOf(PayValue.getText().toString())+ Float.valueOf(moneyValue);
+                                        String strSQL = "UPDATE "+DbHelperGoal.TABLE_NAME+" SET "+DbHelperGoal.ALT_PAYMENT+"="+String.valueOf(val)+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2);
+                                        dataBase.execSQL(strSQL);
+                                        Toast.makeText(getApplication(),PayValue.getText().toString(),Toast.LENGTH_SHORT).show();
+                                        //PayValue.setText("");
+                                        displayData();
+                                        dialog.cancel();
+                                    }
+                                });
+                                build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                                        dialog.cancel();
+                                    }
+                                });
+                                alert = build.create();
+                                alert.show();
                                 break;
-                            case 1:
-                                Toast.makeText(getApplication(), "Expense", Toast.LENGTH_SHORT).show();
+                            case 1://Expense
+                                //Toast.makeText(getApplication(), "Expense", Toast.LENGTH_SHORT).show();
+                                LayoutInflater le = LayoutInflater.from(GoalDisActivity.this);
+                                View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
+                                build = new AlertDialog.Builder(GoalDisActivity.this);
+                                build.setTitle("Expense");
+                                build.setMessage("Please Enter withdrawl amount");
+                                build.setView(promptsExpenseView);
+                                ExpValue = (EditText) promptsExpenseView.findViewById(R.id.PaymentEnter1);
+                                //PayValue.isFocused();
+                                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dataBase = gHelper.getWritableDatabase();
+                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2), null);
+                                        if (mCursor.moveToFirst()) {
+                                            do {
+                                                moneyValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE));
+                                            } while(mCursor.moveToNext());
+                                        }
+                                        float val = Float.valueOf(ExpValue.getText().toString())+Float.valueOf(moneyValue);
+                                        String strSQL = "UPDATE "+DbHelperGoal.TABLE_NAME+" SET "+DbHelperGoal.ALT_EXPENSE+"="+String.valueOf(val)+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2);
+                                        dataBase.execSQL(strSQL);
+                                        ExpValue.setText("");
+                                        displayData();
+                                        dialog.cancel();
+                                    }
+                                });
+                                build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getApplication(), "Expense Cancelled", Toast.LENGTH_SHORT).show();
+                                        dialog.cancel();
+                                    }
+                                });
+                                alert = build.create();
+                                alert.show();
                                 break;
                             case 2://Toast.makeText(getApplication(),"Delete",Toast.LENGTH_SHORT).show();
+                                //Delete Data
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
                                 build.setTitle("Delete " + goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2));
                                 build.setMessage("Do you want to delete ?");
                                 build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-
                                         Toast.makeText(getApplicationContext(), goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2) + " is deleted.", Toast.LENGTH_LONG).show();
-
                                         dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
                                         displayData();
                                         dialog.cancel();
@@ -199,7 +214,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                         dialog.cancel();
                                     }
                                 });
-                                AlertDialog alert = build.create();
+                                //AlertDialog alert = build.create();
+                                alert = build.create();
                                 alert.show();
                                 break;
                             default:
@@ -212,74 +228,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 return true;
             }
         });
-        //click to update data
-        /*goalList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                Intent i = new Intent(getApplicationContext(), GoalAltActivity.class);
-
-                i.putExtra("Goal", goalTitle.get(arg2));
-                i.putExtra("Date", date.get(arg2));
-                i.putExtra("Amount", amount.get(arg2));
-                i.putExtra("DailyBreakDown", dailyBreak.get(arg2));
-                i.putExtra("WeeklyBreakDown", weeklyBreak.get(arg2));
-                i.putExtra("MonthlyBreakDown", monthlyBreak.get(arg2));
-                i.putExtra("DaysLeft", daysLeftGoal.get(arg2));
-                i.putExtra("ID", keyId.get(arg2));
-
-                i.putExtra("update", true);
-                startActivity(i);
-            }
-        });
-
-        //long click to delete data
-        goalList2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-
-                build = new AlertDialog.Builder(GoalDisActivity.this);
-                build.setTitle("Delete " + goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2));
-                build.setMessage("Do you want to delete ?");
-                build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Toast.makeText(getApplicationContext(), goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2) + " is deleted.", Toast.LENGTH_LONG).show();
-
-                        dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
-                        displayData();
-                        dialog.cancel();
-                    }
-                });
-                build.setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog alert = build.create();
-                alert.show();
-
-                return true;
-            }
-        });*/
     }
-
-    /*//@Override
-    public ListView getListView() {
-        return goalList2;
-    }
-
-    //@Override
-    public void getSwipeItem(boolean isRight, int position) {
-        Toast.makeText(this,
-                "Swipe to " + (isRight ? "right" : "left") + " direction", Toast.LENGTH_SHORT).show();
-    }
-
-    //@Override
-    public void onItemClickListener(ListAdapter adapter, int position) {
-        Toast.makeText(this, "Single tap on item position " + position, Toast.LENGTH_SHORT).show();
-    }*/
 
     @Override
     protected void onResume() {
@@ -289,6 +238,7 @@ public class GoalDisActivity extends AppCompatActivity {
 
     //days_of_months(Jan,Feb,Mar,April,May,June,July,Aug,Sept,Oct,Nov,Dec)
     ArrayList<Integer> mon = new ArrayList<Integer>(Arrays.asList(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
+    ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan","Feb","Mar","Apr","May","June","July","Aug","Sept","Oct","Nov","Dec"));
 
     // calculates days from months
     int calMonthDay(int m,int y){//calMonthDay(month,year)
@@ -344,9 +294,10 @@ public class GoalDisActivity extends AppCompatActivity {
         date.clear();
         daysLeftGoal.clear();
         amount.clear();
-        dailyBreak.clear();
-        weeklyBreak.clear();
-        monthlyBreak.clear();
+        progressValue.clear();
+        //dailyBreak.clear();
+        //weeklyBreak.clear();
+        //monthlyBreak.clear();
         if (mCursor.moveToFirst()) {
             do {
                 keyId.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
@@ -357,10 +308,16 @@ public class GoalDisActivity extends AppCompatActivity {
                 year.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
 
                 //display date using day/month/year
-                date.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY))+"/"+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.MONTH))+"/"+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
+                date.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY))+"-"+monStr.get(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)) - 1)+"-"+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
 
-                //Displays goal amount
-                amount.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
+                //mProgress = (ProgressBar) findViewById(R.id.progressBarGoal);
+                int addSavings = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT))) - Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
+                float calSavings = Float.valueOf(addSavings) / Float.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)))*100;
+                progressValue.add((int) calSavings);
+
+                int amountLeftPay = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)))-addSavings;
+                //Displays goal amount && currency
+                amount.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(amountLeftPay)+" of "+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
 
                 //Calculate the days & amount per day/week/month
                 final Calendar c = Calendar.getInstance();
@@ -401,40 +358,17 @@ public class GoalDisActivity extends AppCompatActivity {
                     daysLeftGoal.add(String.valueOf(count)+" days left");
                 }
                 else{// current year exceeds goal year
-                    dailyBreak.add("Timeup");
-                    weeklyBreak.add("Timeup");
-                    monthlyBreak.add("Timeup");
+                    //dailyBreak.add("Timeup");
+                    //weeklyBreak.add("Timeup");
+                    //monthlyBreak.add("Timeup");
                     daysLeftGoal.add("0 days left");
                 }
-
-                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_DAY)))==true && count>0){
-                        dailyBreak.add(String.valueOf(Math.ceil(dailyAmount))+"/day");
-                }else {
-                    dailyBreak.add("-/day");
-                }
-
-                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_WEEK)))==true && count>=7){
-                    int countW = calDateWeek(curMonth,curYear,goalMonth,goalYear);
-                    weeklyBreak.add(String.valueOf(Math.ceil(dailyAmount*count/countW))+"/week");
-                }else{
-                    weeklyBreak.add("-/week");
-                }
-
-                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_MONTH)))==true && count >=28){
-                    int countM = calDateMonth(curMonth,curYear,goalMonth,goalYear);
-                    monthlyBreak.add(String.valueOf(Math.ceil(dailyAmount*count/countM))+"/month");
-                }else {
-                    monthlyBreak.add(String.valueOf("-/month"));
-                }
-
-                //mProgress = (ProgressBar) findViewById(R.id.progressBarGoal);
-
-
             } while (mCursor.moveToNext());
         }
-        goaladpt = new GoalAdapter(GoalDisActivity.this,keyId, goalTitle, day, month, year, date, amount, dailyBreak,weeklyBreak,monthlyBreak,daysLeftGoal);
+        goaladpt = new GoalAdapter(GoalDisActivity.this,keyId, goalTitle, day, month, year, date, amount,daysLeftGoal,progressValue);// dailyBreak,weeklyBreak,monthlyBreak,daysLeftGoal);
         //goaladpt.setCustomButtonListener(GoalAltActivity.class);
         goalList2.setAdapter(goaladpt);
+        //goalList2.invalidateViews();
         mCursor.close();
     }
 

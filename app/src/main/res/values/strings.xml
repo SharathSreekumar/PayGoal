@@ -14,8 +14,16 @@
     <string name="w_paymentsL">Weekly Payments:</string>
     <string name="m_paymentsL">Monthly Payments:</string>
     <string name="g_deadline">Goal Deadline</string>
-    <string name="amount">Amount:</string>
+    <string name="amount">Amount Left:</string>
     <string name="date">Date:</string>
     <string name="title_activity_goal_dis">My Goals</string>
     <string name="title_activity_goal_alt">Achievements</string>
+    <string-array name="currency">
+        <item>₹ (Rupee)</item>
+        <item>$ (Dollar)</item>
+        <item>\u20ac (Euro)</item>
+        <item>\u00a3 (Pound)</item>
+        <item>¥ (Yen)</item>
+    </string-array>
+    <string name="title_activity_goal_info">Goal Information</string>
 </resources>
