@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//Discarded from the Manifest
 //For Goal Payment
 public class GoalAltActivity extends AppCompatActivity {
 

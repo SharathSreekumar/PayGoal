@@ -37,13 +37,6 @@
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
         </activity>
         <activity
-            android:name="com.example.shreekumar.mybillfizz2.GoalAltActivity"
-            android:label="@string/title_activity_goal_alt" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
-        </activity>
-        <activity
             android:name="com.example.shreekumar.mybillfizz2.GoalInfoActivity"
             android:label="@string/title_activity_goal_info" >
             <meta-data

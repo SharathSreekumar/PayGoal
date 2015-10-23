@@ -34,5 +34,7 @@
         android:gravity="right"
         android:id="@+id/PaymentEnter1"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true" >
+        <requestFocus/>
+    </EditText>
 </RelativeLayout><!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/layout/payment_layout.xml -->

@@ -6,10 +6,10 @@
                 <shape android:shape="oval">
                     <solid android:color="#08000000"/>
                     <padding
-                        android:bottom="3px"
-                        android:left="3px"
-                        android:right="3px"
-                        android:top="3px"
+                        android:bottom="1px"
+                        android:left="1px"
+                        android:right="1px"
+                        android:top="1px"
                         />
                 </shape>
             </item>
@@ -17,10 +17,10 @@
                 <shape android:shape="oval">
                     <solid android:color="#09000000"/>
                     <padding
-                        android:bottom="2px"
-                        android:left="2px"
-                        android:right="2px"
-                        android:top="2px"
+                        android:bottom="1px"
+                        android:left="1px"
+                        android:right="1px"
+                        android:top="1px"
                         />
                 </shape>
             </item>
@@ -28,10 +28,10 @@
                 <shape android:shape="oval">
                     <solid android:color="#10000000"/>
                     <padding
-                        android:bottom="2px"
-                        android:left="2px"
-                        android:right="2px"
-                        android:top="2px"
+                        android:bottom="1px"
+                        android:left="1px"
+                        android:right="1px"
+                        android:top="1px"
                         />
                 </shape>
             </item>
@@ -103,10 +103,7 @@
             </item>
             <item>
                 <shape android:shape="oval">
-
                     <solid android:color="@color/ColorPrimary" />
-
-
                 </shape>
             </item>
         </ripple>

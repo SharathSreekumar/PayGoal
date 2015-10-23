@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -43,9 +47,12 @@ import java.util.concurrent.TimeUnit;
 // This file calls "GoalAdapter.java"
 public class GoalDisActivity extends AppCompatActivity {
 
+
+    ImageButton tri;
     static final int PAY_DIALOG_ID = 0;
     private int currentYear, currentMonth, currentDay;
     PopupWindow pwindo;
+    int buttonPosFlag = 0;
     AlertDialog alert;
     String currencyG, moneyValue;
     GoalAdapter goaladpt;
@@ -86,7 +93,7 @@ public class GoalDisActivity extends AppCompatActivity {
 
         //goaladpt.setCustomButtonListener(GoalDisActivity.this);
 
-        ImageButton tri = (ImageButton) findViewById(R.id.imageButtonAdd);
+        tri = (ImageButton) findViewById(R.id.imageButtonAdd);
         tri.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,6 +140,11 @@ public class GoalDisActivity extends AppCompatActivity {
                                 build.setView(promptsPaymentView);
                                 PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
                                 //PayValue.isFocused();
+                                PayValue.setFocusableInTouchMode(true);
+                                PayValue.setFocusable(true);
+                                PayValue.requestFocus();
+                                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
                                 build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dataBase = gHelper.getWritableDatabase();
@@ -148,17 +160,22 @@ public class GoalDisActivity extends AppCompatActivity {
                                         Toast.makeText(getApplication(),PayValue.getText().toString(),Toast.LENGTH_SHORT).show();
                                         //PayValue.setText("");
                                         displayData();
+                                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
                                         dialog.cancel();
                                     }
                                 });
                                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
                                         dialog.cancel();
                                     }
                                 });
                                 alert = build.create();
                                 alert.show();
+                                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                                 break;
                             case 1://Expense
                                 //Toast.makeText(getApplication(), "Expense", Toast.LENGTH_SHORT).show();
@@ -195,6 +212,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                 });
                                 alert = build.create();
                                 alert.show();
+                                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                                 break;
                             case 2://Toast.makeText(getApplication(),"Delete",Toast.LENGTH_SHORT).show();
                                 //Delete Data
@@ -226,6 +244,30 @@ public class GoalDisActivity extends AppCompatActivity {
                 AlertDialog alert = build.create();
                 alert.show();
                 return true;
+            }
+        });
+
+        //hide button on slide down
+        goalList2.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                int zero = 0;
+                int btn_initPosY = tri.getScrollY();
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                    tri.animate().cancel();
+                    tri.animate().translationYBy(150);
+                }else if(scrollState == SCROLL_STATE_FLING){
+                    tri.animate().cancel();
+                    tri.animate().translationYBy(150);
+                } else {
+                    tri.animate().cancel();
+                    tri.animate().translationYBy(-150);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
             }
         });
     }
