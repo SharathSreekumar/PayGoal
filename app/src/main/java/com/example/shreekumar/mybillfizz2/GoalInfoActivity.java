@@ -50,17 +50,17 @@ public class GoalInfoActivity extends AppCompatActivity {
     // calculates days from months
     int calMonthDay(int m,int y){//calMonthDay(month,year)
         int x=0,c;
-        for(c=1;c<m;c++)
+        for(c=1; c<m; c++)
         {
-            if(c==1)
+            if(c == 2)
             {
-                if(y%4==0)//checks if year is leap or not
-                    x+=29;
+                if(y%4 == 0)//checks if year is leap or not
+                    x += 29;
                 else
-                    x+=28;
+                    x += 28;
             }
             else
-                x+=mon.get(c-1);
+                x += mon.get(c-1);
         }
         return(x);
     }
@@ -80,15 +80,15 @@ public class GoalInfoActivity extends AppCompatActivity {
 
     //calculates no. of weeks from current month & year to goal month & year
     int calDateWeek(int mC,int yC,int mG,int yG){
-        int x = 0,i,countW=0;
-        if(yC<=yG){
+        int x = 0, i, countW = 0;
+        if(yC <= yG){
             for(i = yC; i < yG; i++)
-                countW+=52;
+                countW += 12;//12 months // 52 weeks in a year 52 * 7 = 364
         }
 
-        countW -= mC;
-        countW += mG;
-        countW *= 4;
+        countW -= mC;// current year's month
+        countW += mG;// goal year's month
+        countW *= Math.round(4.3333);//52 weeks / 12 months
         return (countW);
     }
 
@@ -103,7 +103,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                 GoalInfoTitle.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)));
                 Payment.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)));
                 Expense.setText("-" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
-                Savings.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT))) - Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)))));
+                Savings.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE))));
                 //wordList.put(DbHelperGoal.ALT_EXPENSE,mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
                 //Toast.makeText(getBaseContext(),monStr.get(mCursor.getColumnIndex(DbHelperGoal.MONTH)),Toast.LENGTH_SHORT).show();
                 //Displays goal amount && currency
@@ -125,7 +125,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                 String goalDate = String.valueOf(goalDay)+"-"+monStr.get(goalMonth-1)+"-"+String.valueOf(goalYear);
                 int count = 0;
                 //Fetches the date and Time from system, hence not used
-                if(curYear<=goalYear) {
+                if(curYear <= goalYear) {
                     count = 0;
                     int i;
                     for (i = curYear; i < goalYear; i++) {
@@ -144,13 +144,16 @@ public class GoalInfoActivity extends AppCompatActivity {
                         count *= -1;
                     }
                     // amount divided as per date
-                    dailyAmount = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)) / count;
-                    DaysToGoal.setText(String.valueOf(count) + " days until "+ goalDate);
+                    dailyAmount = (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) + mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE))) / count;
+                    if(count != 1)
+                        DaysToGoal.setText(String.valueOf(count) + " days until "+ goalDate);
+                    else
+                        DaysToGoal.setText(String.valueOf(count) + " day until "+ goalDate);
                 }
                 else{// current year exceeds goal year
-                    DailyAmount.setText("Timeup");
-                    WeeklyAmount.setText("Timeup");
-                    MonthlyAmount.setText("Timeup");
+                    DailyAmount.setText("Time's up");
+                    WeeklyAmount.setText("Time's up");
+                    MonthlyAmount.setText("Time's up");
                     DaysToGoal.setText("0 days left");
                 }
 
@@ -160,16 +163,16 @@ public class GoalInfoActivity extends AppCompatActivity {
                     DailyAmount.setText("-/Day");
                 }
 
-                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_WEEK)))==true && count>=7){
+                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_WEEK)))==true && count >= 7){
                     int countW = calDateWeek(curMonth,curYear,goalMonth,goalYear);
                     WeeklyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(Math.ceil(dailyAmount * count / countW)) + "/Week");
                 }else{
                     WeeklyAmount.setText("-/Week");
                 }
 
-                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_MONTH)))==true && count >=28){
+                if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_MONTH)))==true && count >= 28){
                     int countM = calDateMonth(curMonth,curYear,goalMonth,goalYear);
-                    MonthlyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(Math.ceil(dailyAmount*count/countM))+"/Month");
+                    MonthlyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(Math.ceil(dailyAmount * count / countM))+"/Month");
                 }else {
                     MonthlyAmount.setText(String.valueOf("-/Month"));
                 }

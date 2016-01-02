@@ -100,19 +100,15 @@ public class GoalAdapter  extends BaseAdapter {
         }
         //mHolder.g_Id.setText(id.get(pos));
         mHolder.g_goal.setText(goal.get(pos));
-        mHolder.g_date.setText(date.get(pos));
-        //mHolder.g_day.setText(day.get(pos));
         mHolder.g_amount.setText(amount.get(pos));
-        //mHolder.g_daybreak.setText(breakdownDay.get(pos));
-        //mHolder.g_weekbreak.setText(breakdownWeek.get(pos));
-        //mHolder.g_monthbreak.setText(breakdownMonth.get(pos));
+        mHolder.g_date.setText(date.get(pos));
         mHolder.g_daysLeft.setText(daysLeftGoal.get(pos));
         //setting prgress value
         mHolder.progressGoal.setProgress(progressValue.get(pos));
         return child;
     }
         //For button
-        /*LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        /** LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.layout, parent, false);
         final int position = pos;
         final String temp = String.valueOf(getItem(position));

@@ -3,6 +3,7 @@ package com.example.shreekumar.mybillfizz2;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
@@ -44,21 +46,24 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 //This java file is used to display a listview for Goal and also to update and delete
-// This file calls "GoalAdapter.java"
+// This file calls "GoalAdapter.java" & "DbHelperGoal.java"
 public class GoalDisActivity extends AppCompatActivity {
 
-
     ImageButton tri;
-    static final int PAY_DIALOG_ID = 0;
+    private NotificationManager myGoalNotifyMgr;
+    static final int PAY_DIALOG_ID = 0, DATE_DIALOG_ID = 0;;
     private int currentYear, currentMonth, currentDay;
     PopupWindow pwindo;
     int buttonPosFlag = 0;
-    AlertDialog alert;
-    String currencyG, moneyValue;
+    float check = 0, val = 0;
+    AlertDialog alert, alert2;
+    String currencyG, moneyValue, dayValue, dbExpAmount;
     GoalAdapter goaladpt;
     private DbHelperGoal gHelper;
     private SQLiteDatabase dataBase;
     EditText PayValue, ExpValue;
+    Button newDate;
+    String dayG,monthG,yearG;
 
     private ArrayList<String> keyId = new ArrayList<String>();
     private ArrayList<String> goalTitle = new ArrayList<String>();
@@ -75,7 +80,7 @@ public class GoalDisActivity extends AppCompatActivity {
 
     public ListView goalList2;
 
-    private AlertDialog.Builder build ;
+    private AlertDialog.Builder build, build2 ;
 
     private ProgressBar mProgress;
     private int mProgressStatus = 0;
@@ -94,7 +99,7 @@ public class GoalDisActivity extends AppCompatActivity {
         //goaladpt.setCustomButtonListener(GoalDisActivity.this);
 
         tri = (ImageButton) findViewById(R.id.imageButtonAdd);
-        tri.setOnClickListener(new AdapterView.OnClickListener() {
+        tri.setOnClickListener( new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), GoalActivity.class);
@@ -103,6 +108,7 @@ public class GoalDisActivity extends AppCompatActivity {
             }
         });
 
+        //go to the detail list
         goalList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
                 Intent i = new Intent(getApplicationContext(), GoalInfoActivity.class);
@@ -123,7 +129,7 @@ public class GoalDisActivity extends AppCompatActivity {
         //On List data long Click
         goalList2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-                final CharSequence[] listClick = {"Payment", "Expense", "Delete"};
+                final CharSequence[] listClick = {"Goal-Date", "Payment", "Expense", "Delete"};
 
                 build = new AlertDialog.Builder(GoalDisActivity.this);
                 build.setTitle("Make your selection");
@@ -131,7 +137,63 @@ public class GoalDisActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         switch (item) {
-                            case 0:
+                            case 0://Date Modifier
+                                LayoutInflater ld = LayoutInflater.from(GoalDisActivity.this);
+                                View promptsDateView = ld.inflate(R.layout.date_button, null);
+                                build = new AlertDialog.Builder(GoalDisActivity.this);
+                                build.setTitle("Goal-Date");
+                                build.setMessage("Please Enter new Goal Date");
+                                build.setView(promptsDateView);
+                                newDate = (Button) promptsDateView.findViewById(R.id.newGoalDate);
+                                newDate.setOnClickListener(new View.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(View view) {
+                                        showDialog(DATE_DIALOG_ID);
+                                    }
+                                });
+
+                                final Calendar c = Calendar.getInstance();
+                                currentYear = c.get(Calendar.YEAR);
+                                currentMonth = c.get(Calendar.MONTH);
+                                currentDay = c.get(Calendar.DAY_OF_MONTH);
+
+                                newDate.setFocusableInTouchMode(true);
+                                //newDate.setFocusable(true);
+                                //newDate.requestFocus();
+                                build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dataBase = gHelper.getWritableDatabase();
+                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
+                                        if (mCursor.moveToFirst()) {
+                                            do {
+                                                dayValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY));
+                                            } while (mCursor.moveToNext());
+                                        }
+                                        int dayVal = Integer.valueOf(dayG), monthVal = Integer.valueOf(monthG), yearVal = Integer.valueOf(yearG);
+                                        String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.DAY + "=" + String.valueOf(dayVal) + ", " + DbHelperGoal.MONTH + "=" + String.valueOf(monthVal) + ", "+ DbHelperGoal.YEAR + "=" + String.valueOf(yearVal) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
+                                        dataBase.execSQL(strSQL);
+                                        Toast.makeText(getApplication(), dayValue.toString(), Toast.LENGTH_SHORT).show();
+                                        //PayValue.setText("");
+                                        displayData();
+                                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                        dialog.cancel();
+                                    }
+                                });
+                                build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getApplication(), "New Date Cancelled", Toast.LENGTH_SHORT).show();
+                                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                        dialog.cancel();
+                                    }
+                                });
+                                alert = build.create();
+                                alert.show();
+                                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                                break;
+                            case 1://Payment
                                 LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
                                 View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
@@ -147,22 +209,72 @@ public class GoalDisActivity extends AppCompatActivity {
                                 //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
                                 build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
+                                        check = 0; val = 0;
                                         dataBase = gHelper.getWritableDatabase();
                                         Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2), null);
                                         if (mCursor.moveToFirst()) {
                                             do {
                                                 moneyValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT));
+                                                dbExpAmount = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT));
+                                                check = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE));
                                             } while (mCursor.moveToNext());
                                         }
-                                        float val = Float.valueOf(PayValue.getText().toString())+ Float.valueOf(moneyValue);
-                                        String strSQL = "UPDATE "+DbHelperGoal.TABLE_NAME+" SET "+DbHelperGoal.ALT_PAYMENT+"="+String.valueOf(val)+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2);
-                                        dataBase.execSQL(strSQL);
-                                        Toast.makeText(getApplication(),PayValue.getText().toString(),Toast.LENGTH_SHORT).show();
-                                        //PayValue.setText("");
-                                        displayData();
-                                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
-                                        dialog.cancel();
+                                        val = Float.valueOf(PayValue.getText().toString())+ Float.valueOf(moneyValue);
+                                        if(val-check <= Float.valueOf(dbExpAmount) && val-check >= 0) {// within the Target Amount
+                                            String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
+                                            dataBase.execSQL(strSQL);
+                                            Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                            //PayValue.setText("");
+                                            displayData();
+                                            //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                            dialog.cancel();
+                                        }else if(val-check > Float.valueOf(dbExpAmount) && val-check >= 0){// if client collects extra amount for that goal, the Target amount extends
+                                            build2 = new AlertDialog.Builder(GoalDisActivity.this);
+                                            build2.setTitle("Confirmation");
+                                            build2.setMessage("The Payment Amount is exceeding the Target Amount. Do you want to increment the Target amount to the new value?");
+                                            build2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.AMOUNT + "=" + String.valueOf(val - check) + "," + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
+                                                    dataBase.execSQL(strSQL);
+                                                    Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                                    //PayValue.setText("");
+                                                    displayData();
+                                                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                            build2.setNeutralButton("No, only Savings", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
+                                                    dataBase.execSQL(strSQL);
+                                                    Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                                    //PayValue.setText("");
+                                                    displayData();
+                                                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                            build2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                                                    //displayData();
+                                                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                            alert2 = build2.create();
+                                            alert2.show();
+                                            alert2.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+                                        }else{
+                                            Toast.makeText(getApplication(),"Sorry, the amount is beyond the Target Amount", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 });
                                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -177,7 +289,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                 alert.show();
                                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                                 break;
-                            case 1://Expense
+                            case 2://Expense
                                 //Toast.makeText(getApplication(), "Expense", Toast.LENGTH_SHORT).show();
                                 LayoutInflater le = LayoutInflater.from(GoalDisActivity.this);
                                 View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
@@ -187,21 +299,29 @@ public class GoalDisActivity extends AppCompatActivity {
                                 build.setView(promptsExpenseView);
                                 ExpValue = (EditText) promptsExpenseView.findViewById(R.id.PaymentEnter1);
                                 //PayValue.isFocused();
-                                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                                build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
+                                        check = 0; val = 0;
                                         dataBase = gHelper.getWritableDatabase();
-                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2), null);
+                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
                                         if (mCursor.moveToFirst()) {
                                             do {
                                                 moneyValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE));
-                                            } while(mCursor.moveToNext());
+                                                dbExpAmount = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT));
+                                                check = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT));
+                                            } while (mCursor.moveToNext());
                                         }
-                                        float val = Float.valueOf(ExpValue.getText().toString())+Float.valueOf(moneyValue);
-                                        String strSQL = "UPDATE "+DbHelperGoal.TABLE_NAME+" SET "+DbHelperGoal.ALT_EXPENSE+"="+String.valueOf(val)+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2);
-                                        dataBase.execSQL(strSQL);
-                                        ExpValue.setText("");
-                                        displayData();
-                                        dialog.cancel();
+
+                                        val = Float.valueOf(ExpValue.getText().toString()) + Float.valueOf(moneyValue);// TextBox + db value
+                                        if(check-val <= Float.valueOf(dbExpAmount) && check-val >= 0) {
+                                            String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_EXPENSE + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
+                                            dataBase.execSQL(strSQL);
+                                            ExpValue.setText("");
+                                            displayData();
+                                            dialog.cancel();
+                                        } else {
+                                            Toast.makeText(getApplication(), "Exceeding the Target amount limit.", Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 });
                                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -214,8 +334,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 alert.show();
                                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                                 break;
-                            case 2://Toast.makeText(getApplication(),"Delete",Toast.LENGTH_SHORT).show();
-                                //Delete Data
+                            case 3://Delete Data
+                                //Toast.makeText(getApplication(),"Delete",Toast.LENGTH_SHORT).show();
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
                                 build.setTitle("Delete " + goalTitle.get(arg2) + " " + date.get(arg2) + " " + amount.get(arg2));
                                 build.setMessage("Do you want to delete ?");
@@ -247,6 +367,7 @@ public class GoalDisActivity extends AppCompatActivity {
             }
         });
 
+
         //hide button on slide down
         goalList2.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -254,23 +375,47 @@ public class GoalDisActivity extends AppCompatActivity {
                 int zero = 0;
                 int btn_initPosY = tri.getScrollY();
                 if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    tri.animate().cancel();
-                    tri.animate().translationYBy(150);
-                }else if(scrollState == SCROLL_STATE_FLING){
-                    tri.animate().cancel();
-                    tri.animate().translationYBy(150);
+                    tri.setVisibility(View.INVISIBLE);
                 } else {
-                    tri.animate().cancel();
-                    tri.animate().translationYBy(-150);
+                    tri.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {//(view-Object, 1st item index, no of values displayed, total items)
+                //Toast.makeText(getApplication(),String.valueOf(visibleItemCount),Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    protected Dialog onCreateDialog(int id) {
+        switch(id){
+            case DATE_DIALOG_ID:
+                return new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener reservationDate = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day){
+            //Button cal=(Button)findViewById(R.id.calendarButton);
+        final Calendar c = Calendar.getInstance();
+        Toast.makeText(getBaseContext(), "calenderLoad",Toast.LENGTH_LONG).show();
+        int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
+        newDate=(Button)findViewById(R.id.newGoalDate);
+            //Picks the selected date, month & year & displays on button
+        if((year>curYear)||(year==curYear && month+1>curMonth)||(year==curYear && month+1==curMonth && day>curDay)) {
+            dayG = Integer.toString(day);
+            monthG = Integer.toString(month + 1);
+            yearG = Integer.toString(year);
+            //newDate.setText(Integer.toString(day) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(year));
+            Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
+        }
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -285,27 +430,25 @@ public class GoalDisActivity extends AppCompatActivity {
     // calculates days from months
     int calMonthDay(int m,int y){//calMonthDay(month,year)
         int x=0,c;
-        for(c=1;c<m;c++)
-        {
-            if(c==1)
-            {
-                if(y%4==0)//checks if year is leap or not
-                    x+=29;
+        for(c = 1; c < m; c++) {// Jan to less than the month 'm' as 'm' we are not taking the the whole days of that month
+            if(c == 2) {//if Feb
+                if(y%4 == 0)//checks if year is leap or not
+                    x += 29;
                 else
-                    x+=28;
+                    x += 28;
             }
             else
-                x+=mon.get(c-1);
+                x += mon.get(c-1);
         }
         return(x);
     }
 
     //calculates no. of months from current month & year to goal month & year
-    int calDateMonth(int mC,int yC,int mG,int yG){
+    int calDateMonth(int mC,int yC,int mG,int yG){//(current-month, current-year, goal-month, goal-year)
         int x = 0,i,countM=0;
         if(yC<=yG){
             for(i = yC; i < yG; i++)
-                countM+=12;
+                countM += 12;
         }
 
         countM -= mC;
@@ -353,11 +496,11 @@ public class GoalDisActivity extends AppCompatActivity {
                 date.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY))+"-"+monStr.get(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)) - 1)+"-"+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
 
                 //mProgress = (ProgressBar) findViewById(R.id.progressBarGoal);
-                int addSavings = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT))) - Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
+                int addSavings = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
                 float calSavings = Float.valueOf(addSavings) / Float.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)))*100;
                 progressValue.add((int) calSavings);
 
-                int amountLeftPay = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)))-addSavings;
+                int amountLeftPay = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT))) - addSavings;
                 //Displays goal amount && currency
                 amount.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(amountLeftPay)+" of "+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
 
@@ -366,7 +509,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
                 int goalYear = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.YEAR)), goalMonth = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)), goalDay = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.DAY));
                 int calYear = 0,calMonth = 0,calDay = 0,calDayGoal = 0;
-                float dailyAmount=0;
+                float dailyAmount = 0;
 
                 //Get current date
                 String curDate = String.valueOf(curDay)+"/"+String.valueOf(curMonth)+"/"+String.valueOf(curYear);
@@ -376,8 +519,9 @@ public class GoalDisActivity extends AppCompatActivity {
                 //String goalDate = String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)))+"/"+String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.MONTH)))+"/"+String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
                 String goalDate = String.valueOf(goalDay)+"/"+String.valueOf(goalMonth)+"/"+String.valueOf(goalYear);
                 int count = 0;
+
                 //Fetches the date and Time from system, hence not used
-                if(curYear<=goalYear) {
+                if(curYear < goalYear || (goalYear==curYear && goalMonth>curMonth)||(goalYear==curYear && goalMonth==curMonth && goalDay>curDay)) {
                     count = 0;
                     int i;
                     for (i = curYear; i < goalYear; i++) {
@@ -397,13 +541,16 @@ public class GoalDisActivity extends AppCompatActivity {
                     }
                     // amount divided as per date
                     dailyAmount = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)) / count;
-                    daysLeftGoal.add(String.valueOf(count)+" days left");
-                }
-                else{// current year exceeds goal year
+
+                    if(count != 1)
+                        daysLeftGoal.add(String.valueOf(count)+" days left");
+                    else
+                        daysLeftGoal.add(String.valueOf(count)+" day left");
+                } else {// current year exceeds goal year
                     //dailyBreak.add("Timeup");
                     //weeklyBreak.add("Timeup");
                     //monthlyBreak.add("Timeup");
-                    daysLeftGoal.add("0 days left");
+                    daysLeftGoal.add("Times up");
                 }
             } while (mCursor.moveToNext());
         }

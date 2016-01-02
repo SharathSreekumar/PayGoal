@@ -3,10 +3,10 @@
     <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string-array name="currency">
-        <item>₹ (Rupee)</item>
         <item>$ (Dollar)</item>
         <item>\u20ac (Euro)</item>
         <item>\u00a3 (Pound)</item>
+        <item>₹ (Rupee)</item>
         <item>¥ (Yen)</item>
     </string-array>
     <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/values/values.xml -->

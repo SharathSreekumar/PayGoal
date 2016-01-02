@@ -24,7 +24,7 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 // This activity is used to retrive data from Goal page & store data to database
-// this activity is linked to "DbHelperGoal.java" & "GoalAdapter.java"
+// this activity is linked to "DbHelperGoal.java"
 public class GoalActivity extends AppCompatActivity {
 
     static final int DATE_DIALOG_ID = 0;
@@ -56,22 +56,21 @@ public class GoalActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
-                        currencyG = "₹";
-                        break;
-                    case 1:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
-                        currencyG = "\u20ac";
-                        break;
-                    case 2:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
-                        currencyG = "\u00a3";
-                        break;
-                    case 3:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
-                        currencyG = "¥";
-                        break;
-                    case 4:Toast.makeText(getApplication(),(String)parent.getSelectedItem(),Toast.LENGTH_SHORT).show();
                         currencyG = "$";
                         break;
-                    default:Toast.makeText(getApplication(),"No such choice",Toast.LENGTH_SHORT).show();
+                    case 1:
+                        currencyG = "\u20ac";
+                        break;
+                    case 2:
+                        currencyG = "\u00a3";
+                        break;
+                    case 3:
+                        currencyG = "₹";
+                        break;
+                    case 4:
+                        currencyG = "¥";
+                        break;
+                    default://Toast.makeText(getApplication(),"No such choice",Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -117,7 +116,7 @@ public class GoalActivity extends AppCompatActivity {
             int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
             dateG=(Button)findViewById(R.id.calendarButton);
             //Picks the selected date, month & year & displays on button
-            if((year>curYear)||(year==curYear && month+1>curMonth)||(year==curYear && month+1==curMonth && day>curDay)) {
+            if((year > curYear)||(year == curYear && month+1 > curMonth)||(year == curYear && month+1 == curMonth && day > curDay)) {
                 dayG = Integer.toString(day);
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
@@ -213,14 +212,13 @@ public class GoalActivity extends AppCompatActivity {
                 //Toast.makeText(getBaseContext(),monthB.toString(),Toast.LENGTH_LONG).show();
 
                 // Checks if Text box slots are empty or not, if not, save data
-                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !dateG.getText().toString().isEmpty())
-                {
+                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !dateG.getText().toString().isEmpty()) {
                     //Toast.makeText(getBaseContext(),dateB.toString(),Toast.LENGTH_LONG).show();
                     saveData();
                 }else{// if slots found blank, pop an alert
                     AlertDialog.Builder alertBuilder=new AlertDialog.Builder(GoalActivity.this);
-                    alertBuilder.setTitle("Invalid Data");
-                    alertBuilder.setMessage("Please, Enter valid data");
+                    alertBuilder.setTitle("Incomplete Data");
+                    alertBuilder.setMessage("Please complete the form.");
                     alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
@@ -235,7 +233,7 @@ public class GoalActivity extends AppCompatActivity {
                 return true;
         }
         //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
+        /** if (id == R.id.action_settings) {
             Toast.makeText(getBaseContext(), "Settings Click working successfully!!!", Toast.LENGTH_SHORT).show();
             return true;
         }
