@@ -496,13 +496,13 @@ public class GoalDisActivity extends AppCompatActivity {
                 date.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY))+"-"+monStr.get(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)) - 1)+"-"+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
 
                 //mProgress = (ProgressBar) findViewById(R.id.progressBarGoal);
-                int addSavings = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
+                float addSavings = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE));//Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
                 float calSavings = Float.valueOf(addSavings) / Float.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)))*100;
                 progressValue.add((int) calSavings);
 
-                int amountLeftPay = Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT))) - addSavings;
+                float amountLeftPay = Float.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT))) - addSavings;
                 //Displays goal amount && currency
-                amount.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(amountLeftPay)+" of "+mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
+                amount.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.format("%.0f",amountLeftPay)+" of "+ String.format("%.0f",mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.AMOUNT))));
 
                 //Calculate the days & amount per day/week/month
                 final Calendar c = Calendar.getInstance();

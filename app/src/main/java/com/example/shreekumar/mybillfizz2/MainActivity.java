@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,30 +33,46 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final int DATE_DIALOG_ID = 0;
-    private int currentYear, currentMonth, currentDay;
-    PopupWindow pwindo;
-
-    private DbHelperGoal gHelper;
-    private SQLiteDatabase dataBase;
-
-    private ArrayList<String> keyId = new ArrayList<String>();
-    private ArrayList<String> goalTitle = new ArrayList<String>();
-    private ArrayList<String> date = new ArrayList<String>();
-    private ArrayList<String> amount = new ArrayList<String>();
-    private ArrayList<String> dailyBreak = new ArrayList<String>();
-    private ArrayList<String> weeklyBreak = new ArrayList<String>();
-    private ArrayList<String> monthlyBreak = new ArrayList<String>();
-
-    private ListView goalList;
-
+    private DbHelperGoal tHelper;
+    private SQLiteDatabase tDataBase;
     private AlertDialog.Builder build ;
+    TextView tGoals, tSavings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tGoals = (TextView)findViewById(R.id.goalNo2);
+        tSavings = (TextView)findViewById(R.id.totalSavings2);
     }
+
+    @Override
+    protected void onResume() {
+        displayData();
+        super.onResume();
+    }
+
+    public void displayData() {
+        tHelper = new DbHelperGoal(this.getBaseContext());
+        tDataBase = tHelper.getWritableDatabase();
+        Cursor mCursor = tDataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME, null);
+        float savings = 0;
+        int goalCnt = 0;
+        String currencyType = "";
+        if (mCursor.moveToFirst()) {
+            do {
+                goalCnt += 1;
+                currencyType = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY));
+                savings += (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
+
+            } while (mCursor.moveToNext());
+        }
+        mCursor.close();
+        tGoals.setText(String.valueOf(goalCnt));
+        tSavings.setText(currencyType + " " + String.format("%.0f",savings));
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
