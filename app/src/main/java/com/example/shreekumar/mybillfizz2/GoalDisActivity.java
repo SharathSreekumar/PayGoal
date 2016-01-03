@@ -375,9 +375,22 @@ public class GoalDisActivity extends AppCompatActivity {
                 int zero = 0;
                 int btn_initPosY = tri.getScrollY();
                 if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    tri.setVisibility(View.INVISIBLE);
-                } else {
-                    tri.setVisibility(View.VISIBLE);
+                    tri.animate().translationX(350);
+                    tri.animate().translationY(350);
+                    tri.animate().rotationX(90);
+                    //tri.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getBaseContext(),"No visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
+                } else if (scrollState == SCROLL_STATE_FLING) {
+                    tri.animate().translationX(350);
+                    tri.animate().translationY(350);
+                    //tri.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getBaseContext(),"Fling visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
+                }else {
+                    tri.animate().translationX(0);
+                    tri.animate().translationY(0);
+                    tri.animate().rotationX(0);
+                    //tri.setVisibility(View.VISIBLE);
+                    Toast.makeText(getBaseContext(),"Visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
                 }
             }
 
