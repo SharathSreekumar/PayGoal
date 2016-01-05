@@ -86,8 +86,7 @@
                         android:bottom="1px"
                         android:left="1px"
                         android:right="1px"
-                        android:top="1px"
-                        />
+                        android:top="1px"/>
                 </shape>
             </item>
         </layer-list>

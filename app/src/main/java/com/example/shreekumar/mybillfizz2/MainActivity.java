@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("update", false);
                 startActivity(i);
                 return true;
+            case R.id.currency_info:
+                return true;
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

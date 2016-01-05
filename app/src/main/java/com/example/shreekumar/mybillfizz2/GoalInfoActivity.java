@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -160,6 +161,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                 if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_DAY)))==true && count>0){
                     DailyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(Math.ceil(dailyAmount))+"/Day");
                 }else {
+                    //DailyAmount.setVisibility(View.INVISIBLE);
                     DailyAmount.setText("-/Day");
                 }
 
@@ -167,6 +169,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                     int countW = calDateWeek(curMonth,curYear,goalMonth,goalYear);
                     WeeklyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(Math.ceil(dailyAmount * count / countW)) + "/Week");
                 }else{
+                    //WeeklyAmount.setVisibility(View.INVISIBLE);
                     WeeklyAmount.setText("-/Week");
                 }
 
@@ -174,6 +177,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                     int countM = calDateMonth(curMonth,curYear,goalMonth,goalYear);
                     MonthlyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(Math.ceil(dailyAmount * count / countM))+"/Month");
                 }else {
+                    //MonthlyAmount.setVisibility(View.INVISIBLE);
                     MonthlyAmount.setText(String.valueOf("-/Month"));
                 }
                 //DaysToGoal.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)) + "/" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.MONTH)) + "/" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));

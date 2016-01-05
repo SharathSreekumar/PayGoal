@@ -112,7 +112,7 @@
             <Button
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Set Goal Date"
+                android:text="@string/button_calendar"
                 android:textSize="20sp"
                 android:id="@+id/calendarButton"
                 android:layout_below="@+id/deadlineTitle"
@@ -127,6 +127,7 @@
                 android:layout_toLeftOf="@+id/amountEntry2"
                 android:layout_toStartOf="@+id/amountEntry2"
                 android:layout_above="@+id/breakDownTitle" />
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

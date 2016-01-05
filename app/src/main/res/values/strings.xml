@@ -18,6 +18,7 @@
     <string name="date">Date:</string>
     <string name="title_activity_goal_dis">My Goals</string>
     <string name="title_activity_goal_alt">Achievements</string>
+    <string name="button_calendar">Set Goal Date</string>
     <string-array name="currency">
         <item>$ (Dollar)</item>
         <item>\u20ac (Euro)</item>

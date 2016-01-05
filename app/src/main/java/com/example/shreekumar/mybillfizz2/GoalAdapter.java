@@ -2,7 +2,17 @@ package com.example.shreekumar.mybillfizz2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ScaleDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +43,7 @@ public class GoalAdapter  extends BaseAdapter {
     //private ArrayList<String> breakdownMonth;
     private ArrayList<String> daysLeftGoal;
     private ArrayList<Integer> progressValue;
+    private ShapeDrawable pgDrawable;
 
     // receives values from GoalDisActivity.java
     public GoalAdapter(Context c, ArrayList<String> gId,ArrayList<String> gGoal, ArrayList<String> gDay, ArrayList<String> gMonth, ArrayList<String> gYear, ArrayList<String> gDate, ArrayList<String> gAmount, ArrayList<String> gDaysLeft,ArrayList<Integer> gProgressValue) {// ArrayList<String> gBreakDay, ArrayList<String> gBreakWeek, ArrayList<String> gBreakMonth, ArrayList<String> gDaysLeft) {
@@ -104,6 +115,14 @@ public class GoalAdapter  extends BaseAdapter {
         mHolder.g_date.setText(date.get(pos));
         mHolder.g_daysLeft.setText(daysLeftGoal.get(pos));
         //setting prgress value
+        /**Drawable bckgrndDr = new ColorDrawable(Color.RED);
+        Drawable secProgressDr = new ColorDrawable(Color.GRAY);
+        Drawable progressDr = new ScaleDrawable(new ColorDrawable(Color.BLUE), Gravity.LEFT, 1, -1);
+        LayerDrawable resultDr = new LayerDrawable(new Drawable[] { bckgrndDr, secProgressDr, progressDr });
+        //setting ids is important
+        resultDr.setId(0, android.R.id.background);
+        resultDr.setId(1, android.R.id.secondaryProgress);
+        resultDr.setId(2, android.R.id.progress);*/
         mHolder.progressGoal.setProgress(progressValue.get(pos));
         return child;
     }

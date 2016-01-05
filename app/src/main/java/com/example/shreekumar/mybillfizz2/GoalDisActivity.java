@@ -377,7 +377,8 @@ public class GoalDisActivity extends AppCompatActivity {
                 if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
                     tri.animate().translationX(350);
                     tri.animate().translationY(350);
-                    tri.animate().rotationX(90);
+                    //tri.animate().rotationX(90);
+                    //tri.animate().scaleY(-100);
                     //tri.setVisibility(View.INVISIBLE);
                     Toast.makeText(getBaseContext(),"No visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
                 } else if (scrollState == SCROLL_STATE_FLING) {
@@ -388,7 +389,8 @@ public class GoalDisActivity extends AppCompatActivity {
                 }else {
                     tri.animate().translationX(0);
                     tri.animate().translationY(0);
-                    tri.animate().rotationX(0);
+                    //tri.animate().rotationX(0);
+                    //tri.animate().scaleY(0);
                     //tri.setVisibility(View.VISIBLE);
                     Toast.makeText(getBaseContext(),"Visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
                 }

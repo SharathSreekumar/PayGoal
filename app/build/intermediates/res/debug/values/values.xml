@@ -52,12 +52,20 @@
     <color name="cardview_light_background">#FFFAFAFA</color>
     <color name="cardview_shadow_end_color">#03000000</color>
     <color name="cardview_shadow_start_color">#37000000</color>
+    <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="completePercent">#33691E</color>
     <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/values/values.xml -->
     <eat-comment/>
     <color name="dim_foreground_disabled_material_dark">#80bebebe</color>
     <color name="dim_foreground_disabled_material_light">#80323232</color>
     <color name="dim_foreground_material_dark">#ffbebebe</color>
     <color name="dim_foreground_material_light">#ff323232</color>
+    <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="halfPercent">#8BC34A</color>
+    <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/values/values.xml -->
+    <eat-comment/>
     <color name="highlighted_text_material_dark">#6680cbc4</color>
     <color name="highlighted_text_material_light">#66009688</color>
     <color name="hint_foreground_material_dark">@color/bright_foreground_disabled_material_dark</color>
@@ -77,6 +85,11 @@
     <color name="primary_text_default_material_light">#de000000</color>
     <color name="primary_text_disabled_material_dark">#4Dffffff</color>
     <color name="primary_text_disabled_material_light">#39000000</color>
+    <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="quaterPercent">#AED581</color>
+    <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/values/values.xml -->
+    <eat-comment/>
     <color name="ripple_material_dark">#4dffffff</color>
     <color name="ripple_material_light">#1f000000</color>
     <color name="secondary_text_default_material_dark">#b3ffffff</color>
@@ -226,6 +239,7 @@
     <string name="amount_n_currency">Amount &amp; Currency</string>
     <string name="app_name">FizzGoal</string>
     <string name="breakdown">Breakdown</string>
+    <string name="button_calendar">Set Goal Date</string>
     <string name="d_payments">Daily Payments</string>
     <string name="d_paymentsL">Daily Payments:</string>
     <string name="date">Date:</string>
@@ -1182,6 +1196,9 @@
     <eat-comment/>
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressBarStyleHorizontal">@drawable/progressbar2</item>
+        <item name="android:startColor">@color/quaterPercent</item>
+        <item name="android:centerColor">@color/halfPercent</item>
+        <item name="android:endColor">@color/completePercent</item>
 <!--        <item name="android:minHeight">5dp</item>
         <item name="android:maxHeight">5dp</item>-->
     </style>

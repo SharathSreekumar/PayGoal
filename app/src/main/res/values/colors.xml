@@ -2,4 +2,7 @@
 <resources>
     <color name="ColorPrimary">#A0A0A0</color>
     <color name="ColorPrimaryDark">#808080</color>
+    <color name="quaterPercent">#AED581</color>
+    <color name="halfPercent">#8BC34A</color>
+    <color name="completePercent">#33691E</color>
 </resources>
