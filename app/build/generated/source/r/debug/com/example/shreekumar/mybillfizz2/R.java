@@ -1828,20 +1828,23 @@ containing a value of this type.
         public static final int camera=0x7f030002;
         public static final int clock=0x7f030003;
         public static final int delete=0x7f030004;
-        public static final int document_add_blue=0x7f030005;
-        public static final int document_add_white=0x7f030006;
-        public static final int document_add_white_thick=0x7f030007;
-        public static final int dollar=0x7f030008;
-        public static final int goal=0x7f030009;
-        public static final int goal_w=0x7f03000a;
-        public static final int ic_launcher=0x7f03000b;
-        public static final int icon=0x7f03000c;
-        public static final int money=0x7f03000d;
-        public static final int new_task=0x7f03000e;
-        public static final int pointed_hat=0x7f03000f;
-        public static final int refresh=0x7f030010;
-        public static final int save=0x7f030011;
-        public static final int task=0x7f030012;
+        public static final int delete_w=0x7f030005;
+        public static final int document_add_blue=0x7f030006;
+        public static final int document_add_white=0x7f030007;
+        public static final int document_add_white_thick=0x7f030008;
+        public static final int dollar=0x7f030009;
+        public static final int goal=0x7f03000a;
+        public static final int goal_w=0x7f03000b;
+        public static final int ic_launcher=0x7f03000c;
+        public static final int icon=0x7f03000d;
+        public static final int money=0x7f03000e;
+        public static final int new_task=0x7f03000f;
+        public static final int pointed_hat=0x7f030010;
+        public static final int refresh=0x7f030011;
+        public static final int save=0x7f030012;
+        public static final int task=0x7f030013;
+        public static final int view_details=0x7f030014;
+        public static final int wizard_w=0x7f030015;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f060000;

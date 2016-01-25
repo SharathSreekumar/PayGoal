@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase tDataBase;
     private AlertDialog.Builder build ;
     TextView tGoals, tSavings;
+    private RelativeLayout totalG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
         tGoals = (TextView)findViewById(R.id.goalNo2);
         tSavings = (TextView)findViewById(R.id.totalSavings2);
+        totalG = (RelativeLayout)findViewById(R.id.viewCashFlowSlot);
+
+        totalG.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), GoalDisActivity.class);
+                i.putExtra("update", false);
+                startActivity(i);
+            }
+        });
     }
 
     @Override

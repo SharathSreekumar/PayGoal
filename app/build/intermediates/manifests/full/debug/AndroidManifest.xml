@@ -32,6 +32,8 @@
         <activity
             android:name="com.example.shreekumar.mybillfizz2.GoalActivity"
             android:label="@string/title_activity_goal" >
+            <service android:name="com.example.shreekumar.mybillfizz2.NotificationUtils$NotificationActionService" />
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />

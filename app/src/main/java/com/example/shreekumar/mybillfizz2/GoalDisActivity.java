@@ -1,17 +1,25 @@
 package com.example.shreekumar.mybillfizz2;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.CalendarContract;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -50,11 +58,10 @@ import java.util.concurrent.TimeUnit;
 public class GoalDisActivity extends AppCompatActivity {
 
     ImageButton tri;
-    private NotificationManager myGoalNotifyMgr;
     static final int PAY_DIALOG_ID = 0, DATE_DIALOG_ID = 0;;
     private int currentYear, currentMonth, currentDay;
     PopupWindow pwindo;
-    int buttonPosFlag = 0;
+    int buttonPosFlag = 0, keyIndex = 0;
     float check = 0, val = 0;
     AlertDialog alert, alert2;
     String currencyG, moneyValue, dayValue, dbExpAmount;
@@ -63,7 +70,10 @@ public class GoalDisActivity extends AppCompatActivity {
     private SQLiteDatabase dataBase;
     EditText PayValue, ExpValue;
     Button newDate;
-    String dayG,monthG,yearG;
+    String dayG, monthG, yearG, delGoalId;
+    private NotificationManager myGoalNotifyMgr;
+    NotificationCompat.Builder gBuilder;
+    PendingIntent resultPendingIntent, deletePendingIntent;
 
     private ArrayList<String> keyId = new ArrayList<String>();
     private ArrayList<String> goalTitle = new ArrayList<String>();
@@ -90,6 +100,16 @@ public class GoalDisActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_dis);
+//        gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.pointed_hat).setContentTitle("My Goals").setContentText("Hello World!");
+//        Intent resultIntent = new Intent(this, GoalDisActivity.class);
+//        // Because clicking the notification opens a new ("special") activity, there's
+//        // no need to create an artificial back stack.
+//        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        int mNotificationId = 001;
+//        // Gets an instance of the NotificationManager service
+//        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        // Builds the notification and issues it.
+//        myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
 
         //call the listview
         goalList2 = (ListView) findViewById(R.id.goalListView2);
@@ -99,7 +119,7 @@ public class GoalDisActivity extends AppCompatActivity {
         //goaladpt.setCustomButtonListener(GoalDisActivity.this);
 
         tri = (ImageButton) findViewById(R.id.imageButtonAdd);
-        tri.setOnClickListener( new AdapterView.OnClickListener() {
+        tri.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), GoalActivity.class);
@@ -108,10 +128,19 @@ public class GoalDisActivity extends AppCompatActivity {
             }
         });
 
+        delGoalId = getIntent().getExtras().getString("ID");
+        if(delGoalId == null){
+            delGoalId = String.valueOf(getIntent().getExtras().getInt("ID"));
+            if(Integer.valueOf(delGoalId) > 0)
+                onReceive(delGoalId);
+        }else if(delGoalId != null )
+            onReceive(delGoalId);
+
         //go to the detail list
         goalList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
                 Intent i = new Intent(getApplicationContext(), GoalInfoActivity.class);
+                //Toast.makeText(getApplicationContext(),String.valueOf(keyId.get(arg2)),Toast.LENGTH_LONG).show();
                 i.putExtra("Goal", goalTitle.get(arg2));
                 i.putExtra("Date", date.get(arg2));
                 i.putExtra("Amount", amount.get(arg2));
@@ -120,7 +149,6 @@ public class GoalDisActivity extends AppCompatActivity {
                 //i.putExtra("MonthlyBreakDown", monthlyBreak.get(arg2));
                 i.putExtra("DaysLeft", daysLeftGoal.get(arg2));
                 i.putExtra("ID", keyId.get(arg2));
-
                 i.putExtra("update", true);
                 startActivity(i);
             }
@@ -380,19 +408,19 @@ public class GoalDisActivity extends AppCompatActivity {
                     //tri.animate().rotationX(90);
                     //tri.animate().scaleY(-100);
                     //tri.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getBaseContext(),"No visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(),"No visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
                 } else if (scrollState == SCROLL_STATE_FLING) {
                     tri.animate().translationX(350);
                     tri.animate().translationY(350);
                     //tri.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getBaseContext(),"Fling visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(),"Fling visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
                 }else {
                     tri.animate().translationX(0);
                     tri.animate().translationY(0);
                     //tri.animate().rotationX(0);
                     //tri.animate().scaleY(0);
                     //tri.setVisibility(View.VISIBLE);
-                    Toast.makeText(getBaseContext(),"Visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(),"Visible " + String.valueOf(scrollState),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -436,6 +464,52 @@ public class GoalDisActivity extends AppCompatActivity {
     protected void onResume() {
         displayData();
         super.onResume();
+    }
+
+    //for notification & delete goal via notification
+    public void onReceive(String delId) {
+        gHelper = new DbHelperGoal(this.getBaseContext());
+        dataBase = gHelper.getWritableDatabase();
+        Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId, null);
+        if (mCursor.moveToFirst()) {
+            do{
+                keyIndex = Integer.valueOf(delId);
+                final String delGoal = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)), delAmount = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT));
+                final String delDate = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)) + "-" + monStr.get(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)) - 1) + "-" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR));
+                build = new AlertDialog.Builder(GoalDisActivity.this);
+                build.setTitle("Delete " + delGoal + " " + delDate + "of amount " + delAmount);
+                build.setMessage("Do you want to delete ?");
+                build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), delGoal + " " + delDate + " of amount " + delAmount + " " + " is deleted.", Toast.LENGTH_LONG).show();
+                        dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyIndex, null);
+                        displayData();
+                        dialog.cancel();
+                        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        myGoalNotifyMgr.cancel(keyIndex);
+                    }
+                });
+                build.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                //AlertDialog alert = build.create();
+                alert = build.create();
+                alert.show();
+            }while (mCursor.moveToNext());
+        }else{
+            build = new AlertDialog.Builder(GoalDisActivity.this);
+            build.setMessage("Sorry, the data might have been moved or deleted.");
+            build.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            //AlertDialog alert = build.create();
+            alert = build.create();
+            alert.show();
+        }
     }
 
     //days_of_months(Jan,Feb,Mar,April,May,June,July,Aug,Sept,Oct,Nov,Dec)
@@ -533,7 +607,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 //Get goal date
                 //String goalDate = String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)))+"/"+String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.MONTH)))+"/"+String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
                 String goalDate = String.valueOf(goalDay)+"/"+String.valueOf(goalMonth)+"/"+String.valueOf(goalYear);
-                int count = 0;
+                int count = -1;
 
                 //Fetches the date and Time from system, hence not used
                 if(curYear < goalYear || (goalYear==curYear && goalMonth>curMonth)||(goalYear==curYear && goalMonth==curMonth && goalDay>curDay)) {
@@ -566,6 +640,68 @@ public class GoalDisActivity extends AppCompatActivity {
                     //weeklyBreak.add("Timeup");
                     //monthlyBreak.add("Timeup");
                     daysLeftGoal.add("Times up");
+                }
+
+                // check if goal date is less than or equals 2 days
+                if(count <= 2 && count >= 0) {
+                    Intent resultIntent = new Intent(this, GoalInfoActivity.class);
+                    resultIntent.putExtra("ID", mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
+                    resultIntent.putExtra("update", true);
+                    resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    Intent deleteIntent = new Intent(this, GoalDisActivity.class);
+                    deleteIntent.putExtra("ID", mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
+                    deleteIntent.putExtra("update", true);
+                    deleteIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //deleteIntent.setAction("Delete");
+
+                    //TaskStackBuilder requires API 16 [4.1] min
+                    if(Build.VERSION.SDK_INT > 15){
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                        stackBuilder.addParentStack(GoalDisActivity.class);
+                        stackBuilder.addNextIntent(resultIntent);
+                        resultPendingIntent =  stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        TaskStackBuilder delStackBuilder = TaskStackBuilder.create(this);
+                        delStackBuilder.addParentStack(MainActivity.class);
+                        delStackBuilder.addNextIntent(deleteIntent);
+                        deletePendingIntent =  delStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    }else{
+                        resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        deletePendingIntent = PendingIntent.getActivity(this, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    }
+
+                    //startActivity(resultIntent);
+                    // Because clicking the notification opens a new ("special") activity, there's
+                    // no need to create an artificial back stack.
+                    //PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    //PendingIntent resultPendingIntent =  stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+                    gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.wizard_w).setContentTitle("My Goals").setContentText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE))).addAction(R.mipmap.view_details, "View", resultPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder.setContentIntent(resultPendingIntent);
+                    gBuilder.setContentIntent(deletePendingIntent);
+                    gBuilder.setPriority(2);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
+
+                    //for the sound and float notification
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, 14);//set the alarm time
+                    calendar.set(Calendar.MINUTE, 57);
+                    calendar.set(Calendar.SECOND, 0);
+                    gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
+                    //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
+
+                    // opens the resultPendingIntent
+                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+                    // open the activity every 24 hours
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000 , resultPendingIntent);
+
+                    gBuilder.setAutoCancel(true);
+                    int mNotificationId = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
+                    keyIndex = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
+                    // Gets an instance of the NotificationManager service
+                    myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    // Builds the notification and issues it.
+                    myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
                 }
             } while (mCursor.moveToNext());
         }

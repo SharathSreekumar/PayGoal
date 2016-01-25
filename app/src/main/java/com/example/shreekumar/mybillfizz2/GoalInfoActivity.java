@@ -26,6 +26,10 @@ public class GoalInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_goal_info);
 
         GoalId = getIntent().getExtras().getString("ID");
+        if(GoalId == null){
+            GoalId = String.valueOf(getIntent().getExtras().getInt("ID"));
+        }
+
         //Toast.makeText(getBaseContext(), GoalId, Toast.LENGTH_SHORT).show();//Working, parser working successfully
         GoalInfoTitle = (TextView)findViewById(R.id.GoalInfoTitle1);
         Payment = (TextView)findViewById(R.id.PaymentsInfo2);
