@@ -14,6 +14,7 @@ public class DbHelperGoal extends SQLiteOpenHelper {
     public static final String TABLE_NAME="trigoal";
     public static final String GOAL_TITLE="gtitle";
     public static final String CURRENCY="currency";
+    public static final String CATEGORY = "category";
     public static final String AMOUNT="gamount";//main goal amount
     public static final String ALT_PAYMENT="altpayment";//keeps record of the payment
     public static final String ALT_EXPENSE="altexpense";//keeps record of the expenses/withdrawl
@@ -29,7 +30,7 @@ public class DbHelperGoal extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE="CREATE TABLE "+ TABLE_NAME +" ("+ KEY_ID +" INTEGER PRIMARY KEY, "+ DAY +" INTEGER, "+ MONTH +" INTEGER, "+ YEAR +" INTEGER, "+ GOAL_TITLE +" TEXT, "+ CURRENCY +" TEXT, "+ AMOUNT +" FLOAT, "+ ALT_PAYMENT +" FLOAT, "+ ALT_EXPENSE +" FLOAT, "+ BREAKDOWN_DAY +" TEXT, "+ BREAKDOWN_WEEK +" TEXT, "+ BREAKDOWN_MONTH +" TEXT)";
+        String CREATE_TABLE="CREATE TABLE "+ TABLE_NAME +" ("+ KEY_ID +" INTEGER PRIMARY KEY, "+ DAY +" INTEGER, "+ MONTH +" INTEGER, "+ YEAR +" INTEGER, "+ GOAL_TITLE +" TEXT, "+ CURRENCY +" TEXT, "+ AMOUNT +" FLOAT, " + CATEGORY + " TEXT, "+ ALT_PAYMENT +" FLOAT, "+ ALT_EXPENSE +" FLOAT, "+ BREAKDOWN_DAY +" TEXT, "+ BREAKDOWN_WEEK +" TEXT, "+ BREAKDOWN_MONTH +" TEXT)";
         db.execSQL(CREATE_TABLE);
     }
 

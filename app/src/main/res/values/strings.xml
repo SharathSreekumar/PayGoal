@@ -20,10 +20,10 @@
     <string name="title_activity_goal_alt">Achievements</string>
     <string name="button_calendar">Set Goal Date</string>
     <string-array name="currency">
+        <item>₹ (Rupee)</item>
         <item>$ (Dollar)</item>
         <item>\u20ac (Euro)</item>
         <item>\u00a3 (Pound)</item>
-        <item>₹ (Rupee)</item>
         <item>¥ (Yen)</item>
     </string-array>
     <string name="title_activity_goal_info">Goal Information</string>

@@ -72,16 +72,16 @@ public class GoalActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        currencyG = "$";
-                        break;
-                    case 1:
-                        currencyG = "\u20ac";
+                        currencyG = "₹";
                         break;
                     case 2:
-                        currencyG = "\u00a3";
+                        currencyG = "\u20ac";
                         break;
                     case 3:
-                        currencyG = "₹";
+                        currencyG = "\u00a3";
+                        break;
+                    case 1:
+                        currencyG = "$";
                         break;
                     case 4:
                         currencyG = "¥";
@@ -121,12 +121,14 @@ public class GoalActivity extends AppCompatActivity {
         currentDay = c.get(Calendar.DAY_OF_MONTH);
     }
 
-    public void categoryFunc(){
+    public void categoryFunc(){ //category DropDown
         ArrayList<Integer> catId = new ArrayList<Integer>();
         ArrayList<String> catCont = new ArrayList<String>();
         dataBase = cHelper.getReadableDatabase();
         Cursor gCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_NAME, null);
 
+        catId.add(-1);
+        catCont.add("--Select Category--");
         if(gCursor.moveToFirst()){
             do{
                 catId.add(gCursor.getInt(gCursor.getColumnIndex(DbHelperCategory.KEY_ID)));
@@ -144,18 +146,25 @@ public class GoalActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 dataBase = cHelper.getWritableDatabase();
-                Cursor gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.KEY_ID + " = " + position + 1, null);
-                categoryG = null;
-                if (gCursor.moveToFirst()) {
-                    do {
-                        categoryG = gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.CAT_TYPE));
-                    } while (gCursor.moveToNext());
+                Cursor gCursor;
+                categoryG = "";
+                if(position != 0) {
+                    if(Build.VERSION.SDK_INT > 15) {
+                        gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{spinnerCat.getSelectedItem().toString()}, null);
+                    }else{
+                        gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
+                    }
+                    //gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + " = " + spinnerCat.getSelectedItem().toString(), null);
+                    //categoryG = "";
+                    if (gCursor.moveToFirst()) {
+                        do {
+                            categoryG = gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.CAT_TYPE));
+                        } while (gCursor.moveToNext());
+                    }
+                    gCursor.close();
                 }
-
-                gCursor.close();
                 dataBase.close();
             }
-
             //Spinner spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
 
             @Override
@@ -209,6 +218,7 @@ public class GoalActivity extends AppCompatActivity {
         values.put(DbHelperGoal.YEAR, yearG.toString());
         values.put(DbHelperGoal.CURRENCY,currencyG.toString());
         values.put(DbHelperGoal.AMOUNT,amountG.getText().toString());
+        values.put(DbHelperGoal.CATEGORY, categoryG.toString());
         values.put(DbHelperGoal.BREAKDOWN_DAY,dateB.toString());
         values.put(DbHelperGoal.BREAKDOWN_WEEK,weekB.toString());
         values.put(DbHelperGoal.BREAKDOWN_MONTH, monthB.toString());
@@ -277,7 +287,7 @@ public class GoalActivity extends AppCompatActivity {
                 //Toast.makeText(getBaseContext(),monthB.toString(),Toast.LENGTH_LONG).show();
 
                 // Checks if Text box slots are empty or not, if not, save data
-                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !dateG.getText().toString().isEmpty()) {
+                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !dateG.getText().toString().isEmpty() && !categoryG.equals("")) {
                     //Toast.makeText(getBaseContext(),dateB.toString(),Toast.LENGTH_LONG).show();
                     saveData();
                 }else{// if slots found blank, pop an alert
@@ -312,8 +322,9 @@ public class GoalActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             dataBase = cHelper.getWritableDatabase();
                             Cursor gCursor;
+                            String str = Character.toUpperCase(CatgyValue.getText().toString().charAt(0)) + CatgyValue.getText().toString().substring(1).toLowerCase();//capitalize the string
                             if(Build.VERSION.SDK_INT > 15) {
-                                gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{CatgyValue.getText().toString()}, null);
+                                gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{str}, null);
                             }else{
                                 gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
                             }
@@ -331,7 +342,7 @@ public class GoalActivity extends AppCompatActivity {
                                 dataBase.close();
                             } else {
                                 ContentValues values = new ContentValues();
-                                values.put(DbHelperCategory.CAT_TYPE, CatgyValue.getText().toString());
+                                values.put(DbHelperCategory.CAT_TYPE, str);
                                 dataBase.insert(DbHelperCategory.TABLE_NAME, null, values);
                                 dataBase.close();
                                 //setContentView(R.layout.activity_goal);
