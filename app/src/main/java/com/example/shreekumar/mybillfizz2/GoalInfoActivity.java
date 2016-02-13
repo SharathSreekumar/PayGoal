@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 public class GoalInfoActivity extends AppCompatActivity {
     TextView GoalInfoTitle, Payment, Expense, Savings, DailyAmount, WeeklyAmount, MonthlyAmount, DaysToGoal;
-    public static String GoalId, amount;
+    public static String GoalId, amount, CategoryId;
     private DbHelperGoal iHelper;
     private SQLiteDatabase iDataBase;
     @Override

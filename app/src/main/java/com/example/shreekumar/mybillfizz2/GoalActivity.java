@@ -5,22 +5,29 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 // This activity is used to retrive data from Goal page & store data to database
@@ -31,20 +38,29 @@ public class GoalActivity extends AppCompatActivity {
     private int currentYear, currentMonth, currentDay;
 
     private DbHelperGoal gHelper;
+    private DbHelperCategory cHelper;
     private SQLiteDatabase dataBase;
     private boolean isUpdate;
     private String id;
     Button dateG, cal, save1;
     String dayG,monthG,yearG;
     EditText goalG,amountG;
-    String currencyG;
+    String currencyG, categoryG;
     CheckBox dayBreakG,weekBreakG,monthBreakG;
     Boolean dateB,weekB,monthB;
+    Spinner spinnerCat;
+    private AlertDialog.Builder build;
+    AlertDialog alert;
+    EditText CatgyValue;
+    int catgyFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal);
+
+        gHelper = new DbHelperGoal(this);
+        cHelper = new DbHelperCategory(this);
 
         //Dropdown currency
         Spinner spinner = (Spinner) findViewById(R.id.spinner1);
@@ -72,6 +88,9 @@ public class GoalActivity extends AppCompatActivity {
                         break;
                     default://Toast.makeText(getApplication(),"No such choice",Toast.LENGTH_SHORT).show();
                 }
+
+                Spinner spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
+
             }
 
             @Override
@@ -83,6 +102,10 @@ public class GoalActivity extends AppCompatActivity {
         //actionBar.setDisplayHomeAsUpEnabled(true);
 
         //button for calendar
+
+        spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
+        categoryFunc();
+
         cal=(Button)findViewById(R.id.calendarButton);
         cal.setOnClickListener(new View.OnClickListener() {
 
@@ -96,8 +119,50 @@ public class GoalActivity extends AppCompatActivity {
         currentYear = c.get(Calendar.YEAR);
         currentMonth = c.get(Calendar.MONTH);
         currentDay = c.get(Calendar.DAY_OF_MONTH);
+    }
 
-        gHelper = new DbHelperGoal(this);
+    public void categoryFunc(){
+        ArrayList<Integer> catId = new ArrayList<Integer>();
+        ArrayList<String> catCont = new ArrayList<String>();
+        dataBase = cHelper.getReadableDatabase();
+        Cursor gCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_NAME, null);
+
+        if(gCursor.moveToFirst()){
+            do{
+                catId.add(gCursor.getInt(gCursor.getColumnIndex(DbHelperCategory.KEY_ID)));
+                catCont.add(gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)));
+            }while(gCursor.moveToNext());
+        }
+        gCursor.close();
+        dataBase.close();
+
+        ArrayAdapter<String> adapterC = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, catCont);
+        //SimpleCursorAdapter adapterC = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, gCursor, catCont, catId);
+        adapterC.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCat.setAdapter(adapterC);
+        spinnerCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                dataBase = cHelper.getWritableDatabase();
+                Cursor gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.KEY_ID + " = " + position + 1, null);
+                categoryG = null;
+                if (gCursor.moveToFirst()) {
+                    do {
+                        categoryG = gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.CAT_TYPE));
+                    } while (gCursor.moveToNext());
+                }
+
+                gCursor.close();
+                dataBase.close();
+            }
+
+            //Spinner spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
     }
 
     protected Dialog onCreateDialog(int id) {
@@ -183,7 +248,7 @@ public class GoalActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id){
-            case R.id.save_goal:
+            case R.id.save_goal://save data
                 goalG=(EditText)findViewById(R.id.goalEntry1);
                 amountG=(EditText)findViewById(R.id.amountEntry2);
                 dateG=(Button)findViewById(R.id.calendarButton);
@@ -229,6 +294,65 @@ public class GoalActivity extends AppCompatActivity {
                 }
 
                 return true;
+                case R.id.categoriesNewG://Category
+                    LayoutInflater li = LayoutInflater.from(GoalActivity.this);
+                    View promptsCategoryView = li.inflate(R.layout.category_layout, null);
+                    build = new AlertDialog.Builder(GoalActivity.this);
+                    build.setTitle("New Category");
+                    build.setMessage("Please Enter new Category");
+                    build.setView(promptsCategoryView);
+                    CatgyValue = (EditText) promptsCategoryView.findViewById(R.id.CategoryEnter1);
+                    //PayValue.isFocused();
+                    CatgyValue.setFocusableInTouchMode(true);
+                    CatgyValue.setFocusable(true);
+                    CatgyValue.requestFocus();
+                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
+                    build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dataBase = cHelper.getWritableDatabase();
+                            Cursor gCursor;
+                            if(Build.VERSION.SDK_INT > 15) {
+                                gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{CatgyValue.getText().toString()}, null);
+                            }else{
+                                gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
+                            }
+                            String dbData = null;
+                            catgyFlag = 0;
+                            if(gCursor.getCount() > 0){
+                                Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
+                                catgyFlag = 1;
+                            }
+                            //gCursor.close();
+                            //dataBase.close();
+                            if (catgyFlag == 1) {
+                                Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
+                                gCursor.close();
+                                dataBase.close();
+                            } else {
+                                ContentValues values = new ContentValues();
+                                values.put(DbHelperCategory.CAT_TYPE, CatgyValue.getText().toString());
+                                dataBase.insert(DbHelperCategory.TABLE_NAME, null, values);
+                                dataBase.close();
+                                //setContentView(R.layout.activity_goal);
+                                categoryFunc();
+                                Toast.makeText(getApplication(), CatgyValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                dialog.cancel();
+                            }
+                        }
+                    });
+
+                    build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplication(), "New Category Cancelled", Toast.LENGTH_SHORT).show();
+                            dialog.cancel();
+                        }
+                    });
+
+                    alert = build.create();
+                    alert.show();
+                    alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    return true;
             case R.id.action_settings:
                 return true;
         }
