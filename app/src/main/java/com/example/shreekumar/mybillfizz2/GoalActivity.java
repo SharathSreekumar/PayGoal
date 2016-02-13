@@ -134,7 +134,7 @@ public class GoalActivity extends AppCompatActivity {
             }while(gCursor.moveToNext());
         }
         gCursor.close();
-        dataBase.close();
+        dataBase.close();//close database
 
         ArrayAdapter<String> adapterC = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, catCont);
         //SimpleCursorAdapter adapterC = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, gCursor, catCont, catId);
