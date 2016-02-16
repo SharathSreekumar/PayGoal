@@ -11,8 +11,7 @@
         android:id="@+id/cardViewDisplay"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:minHeight="150dp"
+        android:layout_height="wrap_content"
         card_view:cardCornerRadius="4dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -21,9 +20,10 @@
 
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/viewCashFlowSlot"
+        android:adjustViewBounds="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" >
@@ -65,6 +65,7 @@
             android:textSize="22dp"
             android:gravity="right"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
             android:text="Total Savings :"
             android:id="@+id/totalSavings1"
             android:layout_below="@+id/goalNo1"
@@ -88,6 +89,20 @@
             android:layout_alignBottom="@+id/totalSavings1"
             android:layout_toRightOf="@+id/totalSavings1"
             android:layout_toEndOf="@+id/totalSavings1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="22dp"
+            android:gravity="right"
+            android:text="Category"
+            android:id="@+id/category2"
+            android:layout_below="@+id/totalSavings1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/totalSavings1"
+            android:layout_alignEnd="@+id/totalSavings1"/>
     </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

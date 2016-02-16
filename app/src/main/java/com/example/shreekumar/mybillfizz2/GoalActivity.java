@@ -119,6 +119,7 @@ public class GoalActivity extends AppCompatActivity {
         currentYear = c.get(Calendar.YEAR);
         currentMonth = c.get(Calendar.MONTH);
         currentDay = c.get(Calendar.DAY_OF_MONTH);
+
     }
 
     public void categoryFunc(){ //category DropDown
@@ -242,6 +243,12 @@ public class GoalActivity extends AppCompatActivity {
         finish();
     }
 
+    /*@Override
+    public void onBackPressed() {//function not needed -> built in function
+        moveTaskToBack(true);
+        this.finish();
+    }*/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -258,6 +265,9 @@ public class GoalActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id){
+            case android.R.id.home://for back button " < " @ action Menu bar
+                onBackPressed();
+                return true;
             case R.id.save_goal://save data
                 goalG=(EditText)findViewById(R.id.goalEntry1);
                 amountG=(EditText)findViewById(R.id.amountEntry2);

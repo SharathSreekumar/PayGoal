@@ -213,6 +213,9 @@ public class GoalInfoActivity extends AppCompatActivity {
             return true;
         }*/
         switch(id){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.save_goal_Pay:
                 break;
             case R.id.action_settings:

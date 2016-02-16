@@ -35,9 +35,10 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
 
     private DbHelperGoal tHelper;
-    private SQLiteDatabase tDataBase;
+    private DbHelperCategory cHelper;
+    private SQLiteDatabase tDataBase, cDataBase;
     private AlertDialog.Builder build ;
-    TextView tGoals, tSavings;
+    TextView tGoals, tSavings, tCategoryNo;
     private RelativeLayout totalG;
 
     @Override
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         tGoals = (TextView)findViewById(R.id.goalNo2);
         tSavings = (TextView)findViewById(R.id.totalSavings2);
         totalG = (RelativeLayout)findViewById(R.id.viewCashFlowSlot);
+        tCategoryNo = (TextView)findViewById(R.id.category2);
 
         totalG.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
@@ -66,23 +68,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayData() {
+        ArrayList<String> categoryList = new ArrayList<String>();
+        ArrayList<Integer> categoryCnt = new ArrayList<Integer>();
+        cHelper = new DbHelperCategory(this.getBaseContext());
+        cDataBase = cHelper.getWritableDatabase();
+        Cursor cCursor = cDataBase.rawQuery("SELECT  * FROM " + DbHelperCategory.TABLE_NAME, null);
+        if(cCursor.moveToFirst()){
+            do{
+                categoryList.add(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)));
+                categoryCnt.add(0);
+                //Toast.makeText(getApplicationContext(),cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)),Toast.LENGTH_LONG).show();
+            }while(cCursor.moveToNext());
+            //Toast.makeText(getApplicationContext(),String.valueOf(categoryList.size()),Toast.LENGTH_LONG).show();
+        }
         tHelper = new DbHelperGoal(this.getBaseContext());
         tDataBase = tHelper.getWritableDatabase();
+
         Cursor mCursor = tDataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME, null);
         float savings = 0;
         int goalCnt = 0;
+        int categoryCntTemp = 0;
         String currencyType = "";
+        int i = 0;
         if (mCursor.moveToFirst()) {
             do {
+                i = 0;
                 goalCnt += 1;
                 currencyType = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY));
                 savings += (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
-
+                do{
+                    if(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CATEGORY)).equals(categoryList.get(i))){
+                        categoryCntTemp = categoryCnt.get(i);
+                        ++categoryCntTemp;
+                        categoryCnt.set(i, categoryCntTemp);
+                        break;
+                    }
+                    i++;
+                }while(i < categoryList.size());
             } while (mCursor.moveToNext());
         }
         mCursor.close();
         tGoals.setText(String.valueOf(goalCnt));
+        String catContent = "";
+        for(i = 0;i<categoryList.size();i++){
+            if(i == 0)
+                catContent = categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
+            else
+                catContent += categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
+        }
         tSavings.setText(currencyType + " " + String.format("%.0f",savings));
+        tCategoryNo.setText(catContent);
     }
 
 

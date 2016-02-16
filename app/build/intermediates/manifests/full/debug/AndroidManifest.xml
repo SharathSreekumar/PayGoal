@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="22" />
+        android:targetSdkVersion="23" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +24,12 @@
         </activity>
         <activity
             android:name="com.example.shreekumar.mybillfizz2.GoalDisActivity"
-            android:label="@string/title_activity_goal_dis" >
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_goal_dis"
+            android:launchMode="singleTask"
+            android:taskAffinity="" >
+            <service android:name="com.example.shreekumar.mybillfizz2.NotificationUtils$NotificationActionService" />
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.MainActivity" />
@@ -32,8 +37,6 @@
         <activity
             android:name="com.example.shreekumar.mybillfizz2.GoalActivity"
             android:label="@string/title_activity_goal" >
-            <service android:name="com.example.shreekumar.mybillfizz2.NotificationUtils$NotificationActionService" />
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />

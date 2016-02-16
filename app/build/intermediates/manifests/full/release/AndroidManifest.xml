@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="22" />
+        android:targetSdkVersion="23" />
 
     <application
         android:allowBackup="true"
@@ -37,15 +37,10 @@
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
         </activity>
         <activity
-            android:name="com.example.shreekumar.mybillfizz2.GoalAltActivity"
-            android:label="@string/title_activity_goal_alt" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
-        </activity>
-        <activity
             android:name="com.example.shreekumar.mybillfizz2.GoalInfoActivity"
             android:label="@string/title_activity_goal_info" >
+
+            <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />

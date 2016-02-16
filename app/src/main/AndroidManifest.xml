@@ -17,7 +17,11 @@
         </activity>
         <activity
             android:name=".GoalDisActivity"
-            android:label="@string/title_activity_goal_dis" >
+            android:label="@string/title_activity_goal_dis"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" >
+            <service android:name=".NotificationUtils$NotificationActionService" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.MainActivity" />
@@ -25,7 +29,6 @@
         <activity
             android:name=".GoalActivity"
             android:label="@string/title_activity_goal" >
-            <service android:name=".NotificationUtils$NotificationActionService" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />

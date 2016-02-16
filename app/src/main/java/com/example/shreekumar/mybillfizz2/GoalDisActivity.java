@@ -106,16 +106,6 @@ public class GoalDisActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_dis);
-//        gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.pointed_hat).setContentTitle("My Goals").setContentText("Hello World!");
-//        Intent resultIntent = new Intent(this, GoalDisActivity.class);
-//        // Because clicking the notification opens a new ("special") activity, there's
-//        // no need to create an artificial back stack.
-//        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        int mNotificationId = 001;
-//        // Gets an instance of the NotificationManager service
-//        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//        // Builds the notification and issues it.
-//        myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
 
         //call the listview
         goalList2 = (ListView) findViewById(R.id.goalListView2);
@@ -134,14 +124,7 @@ public class GoalDisActivity extends AppCompatActivity {
             }
         });
 
-        catNotify = getIntent().getExtras().getString("Category");
         delGoalId = getIntent().getExtras().getString("ID");
-
-        if(catNotify == "0") {
-            Toast.makeText(getApplicationContext(), "Calling " + catNotify, Toast.LENGTH_LONG).show();
-        } else if(catNotify == "1") {
-            Toast.makeText(getApplicationContext(), "Calling " + catNotify, Toast.LENGTH_LONG).show();
-        }
 
         if(delGoalId == null){
             delGoalId = String.valueOf(getIntent().getExtras().getInt("ID"));
@@ -151,7 +134,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 onReceive(delGoalId);
             }
         }else if(delGoalId != null ) {
-                Toast.makeText(getApplicationContext(),"Calling "+catNotify,Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Calling "+ catNotify,Toast.LENGTH_LONG).show();
                 onReceive(delGoalId);
         }
 
@@ -486,48 +469,160 @@ public class GoalDisActivity extends AppCompatActivity {
     }
 
     //for notification & delete goal via notification
-    public void onReceive(String delId) {
-        gHelper = new DbHelperGoal(this.getBaseContext());
-        dataBase = gHelper.getWritableDatabase();
-        Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId, null);
-        if (mCursor.moveToFirst()) {
-            do{
-                keyIndex = Integer.valueOf(delId);
-                final String delGoal = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)), delAmount = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT));
-                final String delDate = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)) + "-" + monStr.get(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)) - 1) + "-" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR));
+    public void onReceive(final String delId) {
+        Toast.makeText(getApplicationContext(),"onReceive",Toast.LENGTH_LONG).show();
+
+        String action = getIntent().getAction();
+        if("Delete".equals(action)) {// to execute delete option
+            Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_LONG).show();
+            gHelper = new DbHelperGoal(this.getBaseContext());
+            dataBase = gHelper.getWritableDatabase();
+            Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId, null);
+            if (mCursor.moveToFirst()) {
+                do{
+                    keyIndex = Integer.valueOf(delId);
+                    final String delGoal = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)), delAmount = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT));
+                    final String delDate = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)) + "-" + monStr.get(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)) - 1) + "-" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR));
+                    build = new AlertDialog.Builder(GoalDisActivity.this);
+                    build.setTitle("Delete " + delGoal + " " + delDate + "of amount " + delAmount);
+                    build.setMessage("Do you want to delete ?");
+                    build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), delGoal + " " + delDate + " of amount " + delAmount + " " + " is deleted.", Toast.LENGTH_LONG).show();
+                            dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyIndex, null);
+                            displayData();
+                            dialog.cancel();
+                            myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            myGoalNotifyMgr.cancel(keyIndex);
+                        }
+                    });
+                    build.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    //AlertDialog alert = build.create();
+                    alert = build.create();
+                    alert.show();
+                }while (mCursor.moveToNext());
+            }else{
                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                build.setTitle("Delete " + delGoal + " " + delDate + "of amount " + delAmount);
-                build.setMessage("Do you want to delete ?");
-                build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), delGoal + " " + delDate + " of amount " + delAmount + " " + " is deleted.", Toast.LENGTH_LONG).show();
-                        dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyIndex, null);
-                        displayData();
-                        dialog.cancel();
-                        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                        myGoalNotifyMgr.cancel(keyIndex);
-                    }
-                });
-                build.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                build.setMessage("Sorry, the data might have been moved or deleted.");
+                build.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 });
-                //AlertDialog alert = build.create();
                 alert = build.create();
                 alert.show();
-            }while (mCursor.moveToNext());
-        }else{
+            }
+        } else if("Pay".equals(action)){
+            Toast.makeText(getApplicationContext(), "Contribute", Toast.LENGTH_LONG).show();
+            //onContribute(delId);
+            LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
+            View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
             build = new AlertDialog.Builder(GoalDisActivity.this);
-            build.setMessage("Sorry, the data might have been moved or deleted.");
-            build.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            build.setTitle("Payment");
+            build.setMessage("Please Enter payment amount");
+            build.setView(promptsPaymentView);
+            PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
+            //PayValue.isFocused();
+            PayValue.setFocusableInTouchMode(true);
+            PayValue.setFocusable(true);
+            PayValue.requestFocus();
+            //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
+            build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
+                    check = 0; val = 0;
+                    moneyValue = "0"; dbExpAmount = "0";
+
+                    dataBase = gHelper.getWritableDatabase();
+                    Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+" = "+ delId , null);
+                    if (mCursor.moveToFirst()) {
+                        do {
+                            moneyValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT));
+                            dbExpAmount = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT));
+                            check = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE));
+                        } while (mCursor.moveToNext());
+                        Toast.makeText(getApplication(), "Money Paid:" + moneyValue, Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getApplication(), "Money not Paid:" + delId, Toast.LENGTH_LONG).show();
+                    }
+                    val = Float.valueOf(PayValue.getText().toString())+ Float.valueOf(moneyValue);
+                    if(val-check <= Float.valueOf(dbExpAmount) && val-check >= 0) {// within the Target Amount
+                        String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId;
+                        dataBase.execSQL(strSQL);
+                        ContentValues values = new ContentValues();
+                        values.put(DbHelperGoal.ALT_PAYMENT, String.valueOf(val));
+                        Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                        //PayValue.setText("");
+                        displayData();
+                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                        dialog.cancel();
+                    }else if(val-check > Float.valueOf(dbExpAmount) && val-check >= 0){// if client collects extra amount for that goal, the Target amount extends
+                        build2 = new AlertDialog.Builder(GoalDisActivity.this);
+                        build2.setTitle("Confirmation");
+                        build2.setMessage("The Payment Amount is exceeding the Target Amount. Do you want to increment the Target amount to the new value?");
+                        build2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.AMOUNT + "=" + String.valueOf(val - check) + "," + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId;
+                                dataBase.execSQL(strSQL);
+                                Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                //PayValue.setText("");
+                                displayData();
+                                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                dialog.cancel();
+                            }
+                        });
+                        build2.setNeutralButton("No, only Savings", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId;
+                                dataBase.execSQL(strSQL);
+                                Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                //PayValue.setText("");
+                                displayData();
+                                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                dialog.cancel();
+                            }
+                        });
+
+                        build2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                                //displayData();
+                                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                                dialog.cancel();
+                            }
+                        });
+
+                        alert2 = build2.create();
+                        alert2.show();
+                        alert2.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+                    }else{
+                        Toast.makeText(getApplication(),"Sorry, the amount is beyond the Target Amount", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
                     dialog.cancel();
                 }
             });
-            //AlertDialog alert = build.create();
             alert = build.create();
             alert.show();
+            alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        } else if("Extend".equals(action)) {
+            Toast.makeText(getApplicationContext(), "Extend", Toast.LENGTH_LONG).show();
+            onUpdate(delId);
         }
     }
 
@@ -607,6 +702,7 @@ public class GoalDisActivity extends AppCompatActivity {
         build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 check = 0; val = 0;
+                moneyValue = "0";
                 dataBase = gHelper.getWritableDatabase();
                 Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+"="+payId, null);
                 if (mCursor.moveToFirst()) {
@@ -744,6 +840,17 @@ public class GoalDisActivity extends AppCompatActivity {
         daysLeftGoal.clear();
         amount.clear();
         progressValue.clear();
+
+        // to avoid duplicate notifications
+        notifyTitle.clear();
+        notifyId.clear();
+        notifyLastDay.clear();
+        // to clear all previous notifications
+        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        myGoalNotifyMgr.cancelAll();
+
+        //myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //myGoalNotifyMgr.cancelAll();
         //dailyBreak.clear();
         //weeklyBreak.clear();
         //monthlyBreak.clear();
@@ -822,6 +929,7 @@ public class GoalDisActivity extends AppCompatActivity {
                     daysLeftGoal.add("Times up");
                 }
 
+                // For notification
                 // check if goal date is less than or equals 2 days
                 if(count <= 2){// && count >= 0) {
 
@@ -854,37 +962,56 @@ public class GoalDisActivity extends AppCompatActivity {
 
                 // provide delete option
                 Intent deleteIntent = new Intent(this, GoalDisActivity.class);
-                //deleteIntent.putExtra("Category", "0");
+                //Intent deleteIntent = new Intent();
+                deleteIntent.setAction("Delete");
                 deleteIntent.putExtra("ID", notifyId.get(0));
                 deleteIntent.putExtra("update", true);
                 deleteIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+                //provide goal date extension
                 Intent extendIntent = new Intent(this, GoalDisActivity.class);
-                //extendIntent.putExtra("Category", "1");
+                extendIntent.setAction("Extend");
                 extendIntent.putExtra("ID", notifyId.get(0));
                 extendIntent.putExtra("update", true);
                 extendIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                //provide payment contribution
+                Intent saveIntent = new Intent(this, GoalDisActivity.class);
+                saveIntent.setAction("Pay");
+                saveIntent.putExtra("ID", notifyId.get(0));
+                saveIntent.putExtra("update", true);
+                saveIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 if(Build.VERSION.SDK_INT > 15) {
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
                     stackBuilder.addParentStack(GoalDisActivity.class);
                     stackBuilder.addNextIntent(resultIntent);
-                    resultPendingIntent =  stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+                    resultPendingIntent =  stackBuilder.getPendingIntent(0,0);
 
                     TaskStackBuilder delStackBuilder = TaskStackBuilder.create(this);
                     delStackBuilder.addParentStack(MainActivity.class);
                     delStackBuilder.addNextIntent(deleteIntent);
-                    deletePendingIntent =  delStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+                    deletePendingIntent =  delStackBuilder.getPendingIntent(1,0);
 
                     TaskStackBuilder extStackBuilder = TaskStackBuilder.create(this);
                     extStackBuilder.addParentStack(MainActivity.class);
                     extStackBuilder.addNextIntent(extendIntent);
-                    extendPendingIntent =  extStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+                    extendPendingIntent =  extStackBuilder.getPendingIntent(2,0);
+
+                    TaskStackBuilder saveStackBuilder = TaskStackBuilder.create(this);
+                    saveStackBuilder.addParentStack(MainActivity.class);
+                    saveStackBuilder.addNextIntent(saveIntent);
+                    savePendingIntent =  saveStackBuilder.getPendingIntent(3,0);
                 } else {
-                    resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    deletePendingIntent = PendingIntent.getActivity(this, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    extendPendingIntent = PendingIntent.getActivity(this, 0, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);//PendingIntent.FLAG_UPDATE_CURRENT);
+                    deletePendingIntent = PendingIntent.getActivity(this, 1, deleteIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
+                    extendPendingIntent = PendingIntent.getActivity(this, 2, extendIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
+                    savePendingIntent = PendingIntent.getActivity(this, 3, saveIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
                 }
+
+//                resultPendingIntent = PendingIntent.getActivity(this, 123, resultIntent, 0);//PendingIntent.FLAG_UPDATE_CURRENT);
+//                deletePendingIntent = PendingIntent.getBroadcast(this, 123, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);// PendingIntent.FLAG_UPDATE_CURRENT);
+//                extendPendingIntent = PendingIntent.getBroadcast(this, 123, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT);// PendingIntent.FLAG_UPDATE_CURRENT);
 
                 // check if goal date is exceeded, if 2 or less days left, then
                 if(notifyLastDay.get(0) >= 0 && notifyLastDay.get(0) <= 2) {
@@ -893,13 +1020,13 @@ public class GoalDisActivity extends AppCompatActivity {
                         remContent = String.valueOf(notifyLastDay.get(0)) + " day left";
                     else
                         remContent = String.valueOf(notifyLastDay.get(0)) + " days left";
-                    gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText("Goals: " + notifyTitle.get(0)).addAction(R.mipmap.money_transfer, "Contribute", resultPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText("Goals: " + notifyTitle.get(0)).addAction(R.mipmap.money_transfer, "Contribute", savePendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
                     gBuilder.setContentIntent(resultPendingIntent);
                     gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(notifyTitle.get(0)).addLine(remContent));
                 }else if(notifyLastDay.get(0) == -1){ // Goals that are Timed out
                     String remContent = notifyTitle.get(0);
                     int cnt = notifyLastDay.size();
-                    gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText("Goals : " + remContent).addAction(R.mipmap.tear_calendar, "Extend", resultPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText("Goals : " + remContent).addAction(R.mipmap.tear_calendar, "Extend", extendPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
                     gBuilder.setContentIntent(resultPendingIntent);
                     gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(remContent).addLine("Time's up"));
                 }
@@ -931,12 +1058,24 @@ public class GoalDisActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),String.valueOf(cnt),Toast.LENGTH_LONG).show();
                 gBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText(String.valueOf(cnt) + "goals");
                 gBuilder.setContentIntent(viewPendingIntent);
-                String summary = "";
-                if(cnt-2 > 0)
+                String summary = String.valueOf(cnt) + " goals";
+                /*if(cnt-2 > 0)
                     summary = " + " + String.valueOf(cnt-2) + " goals";
                 else
-                    summary = String.valueOf(cnt) + " goals";
-                gBuilder.setStyle(new NotificationCompat.InboxStyle().addLine(notifyTitle.get(0) + " - " + notifyLastDay.get(0) + " days left").addLine(notifyTitle.get(1) + " - " + notifyLastDay.get(0) + " days left").setSummaryText(summary));
+                    summary = String.valueOf(cnt) + " goals";*/
+
+                //gBuilder.setStyle(new NotificationCompat.InboxStyle().addLine(notifyTitle.get(0) + " - " + notifyLastDay.get(0) + " days left").addLine(notifyTitle.get(1) + " - " + notifyLastDay.get(1) + " days left").setSummaryText(summary));
+                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+                if(cnt <= 3)// if only 3 near date goals, show all
+                    for(int i = 0; i < cnt; i++)
+                        inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " days left");
+                else// show only 3 of 'n'
+                    for(int i = 0; i < 3; i++)
+                        inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " days left");
+                inboxStyle.setSummaryText(summary);
+                gBuilder.setStyle(inboxStyle);
+
                 gBuilder.setGroup("My Goals");
                 gBuilder.setGroupSummary(true);
                 gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
@@ -958,7 +1097,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 int mNotificationId = 10;
                 //keyIndex = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
                 // Gets an instance of the NotificationManager service
-                myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                //myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 // Builds the notification and issues it.
                 myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
             }

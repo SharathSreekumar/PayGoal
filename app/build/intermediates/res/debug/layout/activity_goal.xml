@@ -129,6 +129,29 @@
                 android:layout_toStartOf="@+id/amountEntry2"
                 android:layout_above="@+id/breakDownTitle" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Categories"
+                android:layout_marginTop="15dp"
+                android:textSize="30sp"
+                android:id="@+id/CategoryG"
+                android:layout_below="@+id/calendarButton"
+                android:layout_centerHorizontal="true" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/categoryDrop"
+                android:minHeight="10dp"
+                android:layout_below="@+id/CategoryG"
+                android:layout_alignRight="@+id/amountTitle2"
+                android:layout_alignEnd="@+id/amountTitle2"
+                android:layout_alignLeft="@+id/amountTitle2"
+                android:layout_alignStart="@+id/amountTitle2"
+                android:layout_alignParentBottom="true" />
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
