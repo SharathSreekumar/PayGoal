@@ -462,6 +462,14 @@ public class GoalDisActivity extends AppCompatActivity {
         }
     };
 
+    /*@Override
+    protected void onNewIntent(Intent intent) {// used for FLAG_ACTIVITY_SINGLE_TOP flag
+        super.onNewIntent(intent);
+        // getIntent() should always return the most recent
+        setIntent(intent);
+        onReceive("5");
+    }*/
+
     @Override
     protected void onResume() {
         displayData();
@@ -490,10 +498,10 @@ public class GoalDisActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getApplicationContext(), delGoal + " " + delDate + " of amount " + delAmount + " " + " is deleted.", Toast.LENGTH_LONG).show();
                             dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyIndex, null);
-                            displayData();
-                            dialog.cancel();
                             myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                             myGoalNotifyMgr.cancel(keyIndex);
+                            displayData();
+                            dialog.cancel();
                         }
                     });
                     build.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -557,6 +565,8 @@ public class GoalDisActivity extends AppCompatActivity {
                         values.put(DbHelperGoal.ALT_PAYMENT, String.valueOf(val));
                         Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                         //PayValue.setText("");
+                        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        myGoalNotifyMgr.cancel(keyIndex);
                         displayData();
                         //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
@@ -571,6 +581,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 dataBase.execSQL(strSQL);
                                 Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                 //PayValue.setText("");
+                                myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                myGoalNotifyMgr.cancel(keyIndex);
                                 displayData();
                                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
@@ -583,6 +595,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 dataBase.execSQL(strSQL);
                                 Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                 //PayValue.setText("");
+                                myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                myGoalNotifyMgr.cancel(keyIndex);
                                 displayData();
                                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
@@ -986,27 +1000,27 @@ public class GoalDisActivity extends AppCompatActivity {
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
                     stackBuilder.addParentStack(GoalDisActivity.class);
                     stackBuilder.addNextIntent(resultIntent);
-                    resultPendingIntent =  stackBuilder.getPendingIntent(0,0);
+                    resultPendingIntent =  stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);//0);
 
                     TaskStackBuilder delStackBuilder = TaskStackBuilder.create(this);
                     delStackBuilder.addParentStack(MainActivity.class);
                     delStackBuilder.addNextIntent(deleteIntent);
-                    deletePendingIntent =  delStackBuilder.getPendingIntent(1,0);
+                    deletePendingIntent =  delStackBuilder.getPendingIntent(1,PendingIntent.FLAG_UPDATE_CURRENT);//0);
 
                     TaskStackBuilder extStackBuilder = TaskStackBuilder.create(this);
                     extStackBuilder.addParentStack(MainActivity.class);
                     extStackBuilder.addNextIntent(extendIntent);
-                    extendPendingIntent =  extStackBuilder.getPendingIntent(2,0);
+                    extendPendingIntent =  extStackBuilder.getPendingIntent(2,PendingIntent.FLAG_UPDATE_CURRENT);//0);
 
                     TaskStackBuilder saveStackBuilder = TaskStackBuilder.create(this);
                     saveStackBuilder.addParentStack(MainActivity.class);
                     saveStackBuilder.addNextIntent(saveIntent);
-                    savePendingIntent =  saveStackBuilder.getPendingIntent(3,0);
+                    savePendingIntent =  saveStackBuilder.getPendingIntent(3,PendingIntent.FLAG_UPDATE_CURRENT);//0);
                 } else {
-                    resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);//PendingIntent.FLAG_UPDATE_CURRENT);
-                    deletePendingIntent = PendingIntent.getActivity(this, 1, deleteIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
-                    extendPendingIntent = PendingIntent.getActivity(this, 2, extendIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
-                    savePendingIntent = PendingIntent.getActivity(this, 3, saveIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
+                    resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);// 0);
+                    deletePendingIntent = PendingIntent.getActivity(this, 1, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);// PendingIntent.FLAG_UPDATE_CURRENT);
+                    extendPendingIntent = PendingIntent.getActivity(this, 2, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT);// 0);
+                    savePendingIntent = PendingIntent.getActivity(this, 3, saveIntent, PendingIntent.FLAG_UPDATE_CURRENT);// 0);
                 }
 
 //                resultPendingIntent = PendingIntent.getActivity(this, 123, resultIntent, 0);//PendingIntent.FLAG_UPDATE_CURRENT);

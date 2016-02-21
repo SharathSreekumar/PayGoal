@@ -15,9 +15,9 @@ ADDED from AndroidManifest.xml:2:1
 		INJECTED from AndroidManifest.xml:0:0
 application
 ADDED from AndroidManifest.xml:5:5
-MERGED from com.android.support:appcompat-v7:22.1.1:22:5
-MERGED from com.android.support:support-v4:22.1.1:22:5
-MERGED from com.android.support:cardview-v7:22.1.1:22:5
+MERGED from com.android.support:appcompat-v7:23.0.1:22:5
+MERGED from com.android.support:support-v4:23.0.1:22:5
+MERGED from com.android.support:cardview-v7:23.0.1:22:5
 	android:label
 		ADDED from AndroidManifest.xml:8:9
 	android:allowBackup
@@ -39,42 +39,48 @@ ADDED from AndroidManifest.xml:14:17
 	android:name
 		ADDED from AndroidManifest.xml:14:25
 category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:16:17
+ADDED from AndroidManifest.xml:15:17
 	android:name
-		ADDED from AndroidManifest.xml:16:27
+		ADDED from AndroidManifest.xml:15:27
 activity#com.example.shreekumar.mybillfizz2.GoalDisActivity
-ADDED from AndroidManifest.xml:19:9
+ADDED from AndroidManifest.xml:18:9
 	android:label
-		ADDED from AndroidManifest.xml:21:13
-	android:name
 		ADDED from AndroidManifest.xml:20:13
-meta-data#android.support.PARENT_ACTIVITY
-ADDED from AndroidManifest.xml:22:13
+	android:excludeFromRecents
+		ADDED from AndroidManifest.xml:23:13
+	android:taskAffinity
+		ADDED from AndroidManifest.xml:22:13
 	android:name
-		ADDED from AndroidManifest.xml:23:17
-	android:value
-		ADDED from AndroidManifest.xml:24:17
-activity#com.example.shreekumar.mybillfizz2.GoalActivity
-ADDED from AndroidManifest.xml:26:9
-	android:label
-		ADDED from AndroidManifest.xml:28:13
-	android:name
-		ADDED from AndroidManifest.xml:27:13
+		ADDED from AndroidManifest.xml:19:13
+	android:launchMode
+		ADDED from AndroidManifest.xml:21:13
 service#com.example.shreekumar.mybillfizz2.NotificationUtils$NotificationActionService
-ADDED from AndroidManifest.xml:29:13
+ADDED from AndroidManifest.xml:24:13
 	android:name
-		ADDED from AndroidManifest.xml:29:22
-activity#com.example.shreekumar.mybillfizz2.GoalInfoActivity
-ADDED from AndroidManifest.xml:34:9
+		ADDED from AndroidManifest.xml:24:22
+meta-data#android.support.PARENT_ACTIVITY
+ADDED from AndroidManifest.xml:25:13
+	android:name
+		ADDED from AndroidManifest.xml:26:17
+	android:value
+		ADDED from AndroidManifest.xml:27:17
+activity#com.example.shreekumar.mybillfizz2.GoalActivity
+ADDED from AndroidManifest.xml:29:9
 	android:label
-		ADDED from AndroidManifest.xml:36:13
+		ADDED from AndroidManifest.xml:31:13
 	android:name
-		ADDED from AndroidManifest.xml:35:13
+		ADDED from AndroidManifest.xml:30:13
+activity#com.example.shreekumar.mybillfizz2.GoalInfoActivity
+ADDED from AndroidManifest.xml:36:9
+	android:label
+		ADDED from AndroidManifest.xml:38:13
+	android:name
+		ADDED from AndroidManifest.xml:37:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
-MERGED from com.android.support:appcompat-v7:22.1.1:20:5
-MERGED from com.android.support:support-v4:22.1.1:20:5
-MERGED from com.android.support:cardview-v7:22.1.1:20:5
+MERGED from com.android.support:appcompat-v7:23.0.1:20:5
+MERGED from com.android.support:support-v4:23.0.1:20:5
+MERGED from com.android.support:cardview-v7:23.0.1:20:5
 	android:targetSdkVersion
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
