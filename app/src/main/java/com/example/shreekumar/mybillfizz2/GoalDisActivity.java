@@ -1049,8 +1049,8 @@ public class GoalDisActivity extends AppCompatActivity {
                 gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 14);//set the alarm time
-                calendar.set(Calendar.MINUTE, 57);
+                calendar.set(Calendar.HOUR_OF_DAY, 21);//set the alarm time
+                calendar.set(Calendar.MINUTE, 42);
                 calendar.set(Calendar.SECOND, 0);
                 gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
                 //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
@@ -1104,7 +1104,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 // opens the resultPendingIntent
                 AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                 // open the activity every 24 hours
-                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 3 * 24 * 60 * 60 * 1000 , viewPendingIntent);
+                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000 , viewPendingIntent);
                 //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , viewPendingIntent);
 
                 gBuilder.setAutoCancel(true);

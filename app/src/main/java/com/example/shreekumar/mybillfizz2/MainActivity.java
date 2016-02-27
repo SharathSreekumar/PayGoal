@@ -1,16 +1,20 @@
 package com.example.shreekumar.mybillfizz2;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +35,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,7 +70,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         displayData();
+        createAlarm();
         super.onResume();
+    }
+
+    private void createAlarm() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,07);
+        calendar.set(Calendar.MINUTE, 00);
+        calendar.set(Calendar.SECOND, 00);
+        //calendar.get(Calendar.HOUR_OF_DAY);//set the alarm time
+        //calendar.get(Calendar.MINUTE);
+        //calendar.get(Calendar.SECOND);
+
+        AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent mNotificationReceiverIntent = new Intent(MainActivity.this, AlarmNotificationReceiver.class);
+        PendingIntent mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, mNotificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //mAlarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, mNotificationReceiverPendingIntent);
+        mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, 60 * 1000, mNotificationReceiverPendingIntent);
+        Log.i("MainActivity", "Alarm created");
+        Toast.makeText(getApplicationContext(),"Alarm created",Toast.LENGTH_LONG).show();
     }
 
     public void displayData() {
