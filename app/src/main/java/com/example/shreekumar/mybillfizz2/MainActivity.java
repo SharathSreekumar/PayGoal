@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,10 +22,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -46,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder build ;
     TextView tGoals, tSavings, tCategoryNo;
     private RelativeLayout totalG;
+    EditText transAmount;
+    AlertDialog alert;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createAlarm() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,07);
+        calendar.set(Calendar.HOUR_OF_DAY,00);
         calendar.set(Calendar.MINUTE, 00);
         calendar.set(Calendar.SECOND, 00);
         //calendar.get(Calendar.HOUR_OF_DAY);//set the alarm time
@@ -168,6 +176,62 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
                 return true;
             case R.id.currency_info:
+                return true;
+            case R.id.checkAlert:
+                for(int x=0;x<3;x++) {
+                    LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                    View promptsCheckView = li.inflate(R.layout.checktrial, null);
+                    cHelper = new DbHelperCategory(this);
+                    build = new AlertDialog.Builder(MainActivity.this);
+                    build.setTitle("CheckBox Test");
+                    build.setMessage("Please Select the Checkbox");
+                    build.setView(promptsCheckView);
+                    final CheckBox checkB = (CheckBox) promptsCheckView.findViewById(R.id.checkBoxTrial1);
+                    transAmount = (EditText) promptsCheckView.findViewById(R.id.checkBoxTrialText);
+
+                    transAmount.setVisibility(View.GONE);
+
+                    checkB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked == true) {
+                                Toast.makeText(getApplication(),"Checked",Toast.LENGTH_LONG).show();
+                                //transAmount.setVisibility(View.GONE);//TO HIDE THE BUTTON
+                                transAmount.setVisibility(View.VISIBLE);//TO SHOW THE BUTTON
+                                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                            } else {
+                                Toast.makeText(getApplication(),"Not Checked",Toast.LENGTH_LONG).show();
+                                transAmount.setVisibility(View.GONE);//TO HIDE THE BUTTON
+                                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            }
+                        }
+                    });
+
+                    build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (transAmount.getText().toString() != "" && checkB.isChecked())
+                                Toast.makeText(getApplication(), transAmount.getText().toString(), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getApplication(), "Sorry, Transaction details not complete", Toast.LENGTH_SHORT).show();
+                            dialog.cancel();
+                        }
+                    });
+
+                    build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplication(), "New Transaction Cancelled", Toast.LENGTH_SHORT).show();
+                            dialog.cancel();
+                        }
+                    });
+
+                    alert = build.create();
+                    alert.show();
+                    alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    if (!checkB.isChecked())
+                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    else
+                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
                 return true;
         }
         //noinspection SimplifiableIfStatement

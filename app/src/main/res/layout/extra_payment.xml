@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:weightSum="1.0">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Contribution"
+        android:id="@+id/contributionAlt"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="-"
+        android:gravity="right"
+        android:id="@+id/primaryGoal1"
+        android:layout_below="@+id/contributionAlt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="-"
+        android:gravity="left"
+        android:id="@+id/primaryGoal2"
+        android:layout_below="@+id/contributionAlt"
+        android:layout_toRightOf="@+id/primaryGoal1"
+        android:layout_toEndOf="@+id/primaryGoal1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Alternate Contribution"
+        android:textSize="25dp"
+        android:id="@+id/altContribution"
+        android:gravity="center"
+        android:layout_marginTop="42dp"
+        android:layout_below="@+id/primaryGoal2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

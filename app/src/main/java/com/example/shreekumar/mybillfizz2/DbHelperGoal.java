@@ -24,13 +24,14 @@ public class DbHelperGoal extends SQLiteOpenHelper {
     public static final String BREAKDOWN_DAY="breakday";
     public static final String BREAKDOWN_WEEK="breakweek";
     public static final String BREAKDOWN_MONTH="breakmonth";
+    public static final String NOTIFICATION_DATE="notifyType";
     public static final String KEY_ID="_id";
 
     public DbHelperGoal(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE="CREATE TABLE "+ TABLE_NAME +" ("+ KEY_ID +" INTEGER PRIMARY KEY, "+ DAY +" INTEGER, "+ MONTH +" INTEGER, "+ YEAR +" INTEGER, "+ GOAL_TITLE +" TEXT, "+ CURRENCY +" TEXT, "+ AMOUNT +" FLOAT, " + CATEGORY + " TEXT, "+ ALT_PAYMENT +" FLOAT, "+ ALT_EXPENSE +" FLOAT, "+ BREAKDOWN_DAY +" TEXT, "+ BREAKDOWN_WEEK +" TEXT, "+ BREAKDOWN_MONTH +" TEXT)";
+        String CREATE_TABLE="CREATE TABLE "+ TABLE_NAME +" ("+ KEY_ID +" INTEGER PRIMARY KEY, "+ DAY +" INTEGER, "+ MONTH +" INTEGER, "+ YEAR +" INTEGER, "+ GOAL_TITLE +" TEXT, "+ CURRENCY +" TEXT, "+ AMOUNT +" FLOAT, " + CATEGORY + " TEXT, "+ ALT_PAYMENT +" FLOAT, "+ ALT_EXPENSE +" FLOAT, "+ BREAKDOWN_DAY +" TEXT, "+ BREAKDOWN_WEEK +" TEXT, "+ BREAKDOWN_MONTH +" TEXT,"+ NOTIFICATION_DATE +" TEXT)";
         db.execSQL(CREATE_TABLE);
     }
 

@@ -42,6 +42,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.shreekumar.mybillfizz2.GoalDisActivity" />
         </activity>
+        <activity android:name=".Calc"
+            android:label="Calculator"
+            android:theme="@style/Theme.Floating">
+        </activity>
     </application>
 
 </manifest>

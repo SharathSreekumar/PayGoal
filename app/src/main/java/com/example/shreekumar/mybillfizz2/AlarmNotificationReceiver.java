@@ -190,7 +190,16 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 
                 // For notification
                 // check if goal date is less than or equals 2 days
-                if(count <= 2){
+                String tempNotif = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.NOTIFICATION_DATE));
+                int notifCnt = 1;
+                if(tempNotif == "daily")
+                    notifCnt = 1;
+                else if(tempNotif == "weekly")
+                    notifCnt = 7;
+                else if (tempNotif == "monthly")
+                    notifCnt = 30;
+
+                if(count <= 2 || count % notifCnt == 0){
                     notifyLastDay.add(count);
                     notifyTitle.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)));
                     notifyId.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
@@ -269,7 +278,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 }
 
                 // check if goal date is exceeded, if 2 or less days left, then
-                if(notifyLastDay.get(0) >= 0 && notifyLastDay.get(0) <= 2) {
+                if(notifyLastDay.get(0) >= 0){// && notifyLastDay.get(0) <= 2) {
                     String remContent = "";
                     if(notifyLastDay.get(0) == 1)
                         remContent = String.valueOf(notifyLastDay.get(0)) + " day left";

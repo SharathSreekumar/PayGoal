@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/goalEntry1"
                 android:hint="@string/tite_goal"
-                android:textSize="40sp"
+                android:textSize="35sp"
                 android:gravity="left"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/amount_n_currency"
-                android:textSize="25sp"
+                android:textSize="23sp"
                 android:id="@+id/amountTitle2"
                 android:gravity="center_horizontal"
                 android:layout_below="@+id/goalEntry1"
@@ -65,7 +65,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/breakdown"
                 android:layout_marginTop="10dp"
-                android:textSize="30sp"
+                android:textSize="26sp"
                 android:id="@+id/breakDownTitle"
                 android:layout_below="@+id/amountEntry2"
                 android:layout_centerHorizontal="true" />
@@ -103,7 +103,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/g_deadline"
                 android:textSize="30sp"
-                android:layout_marginTop="10dp"
                 android:id="@+id/deadlineTitle"
                 android:gravity="center_horizontal"
                 android:layout_below="@+id/checkBoxMonthly"
@@ -133,7 +132,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Categories"
-                android:layout_marginTop="15dp"
                 android:textSize="30sp"
                 android:id="@+id/CategoryG"
                 android:layout_below="@+id/calendarButton"
@@ -143,13 +141,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/categoryDrop"
-                android:minHeight="10dp"
+                android:minHeight="6dp"
                 android:layout_below="@+id/CategoryG"
-                android:layout_alignRight="@+id/amountTitle2"
-                android:layout_alignEnd="@+id/amountTitle2"
                 android:layout_alignLeft="@+id/amountTitle2"
                 android:layout_alignStart="@+id/amountTitle2"
-                android:layout_alignParentBottom="true" />
+                android:layout_alignRight="@+id/calendarButton"
+                android:layout_alignEnd="@+id/calendarButton" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/notifyDate"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/categoryDrop"
+                android:layout_alignRight="@+id/categoryDrop"
+                android:layout_alignEnd="@+id/categoryDrop"
+                android:layout_alignLeft="@+id/calendarButton"
+                android:layout_alignStart="@+id/calendarButton" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

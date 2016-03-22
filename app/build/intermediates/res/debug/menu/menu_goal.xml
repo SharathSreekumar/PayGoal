@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.shreekumar.mybillfizz2.GoalActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="101" app:showAsAction="never" />
+        android:orderInCategory="102" app:showAsAction="never" />
     <item android:id="@+id/save_goal" android:title="Save Goal"
         app:showAsAction="always" android:icon="@mipmap/save" />
     <item android:id="@+id/categoriesNewG" android:title="Add Category"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="101" app:showAsAction="never" />
+    <item android:id="@+id/calculator" android:orderInCategory="100"
+        android:title="Calculator" app:showAsAction="never"/>
 </menu>
 <!-- From: file:/C:/Users/Shreekumar/AndroidStudioProjects/MyBillFizz2/app/src/main/res/menu/menu_goal.xml -->

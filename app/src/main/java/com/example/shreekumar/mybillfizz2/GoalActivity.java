@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 // This activity is used to retrive data from Goal page & store data to database
 // this activity is linked to "DbHelperGoal.java"
@@ -45,7 +47,7 @@ public class GoalActivity extends AppCompatActivity {
     Button dateG, cal, save1;
     String dayG,monthG,yearG;
     EditText goalG,amountG;
-    String currencyG, categoryG;
+    String currencyG, notifyIntervalG, categoryG;
     CheckBox dayBreakG,weekBreakG,monthBreakG;
     Boolean dateB,weekB,monthB;
     Spinner spinnerCat;
@@ -53,6 +55,7 @@ public class GoalActivity extends AppCompatActivity {
     AlertDialog alert;
     EditText CatgyValue;
     int catgyFlag;
+    //DatePickerDialog.OnDateSetListener reservationDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class GoalActivity extends AppCompatActivity {
 
         //Dropdown currency
         Spinner spinner = (Spinner) findViewById(R.id.spinner1);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.currency, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -103,11 +107,44 @@ public class GoalActivity extends AppCompatActivity {
 
         //button for calendar
 
-        spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
-        categoryFunc();
+        Spinner notifyInterval = (Spinner) findViewById(R.id.notifyDate);
+        ArrayAdapter<CharSequence> adapterInterval = ArrayAdapter.createFromResource(this, R.array.notifyInterval, android.R.layout.simple_spinner_item);
+        adapterInterval.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        notifyInterval.setAdapter(adapterInterval);
+        notifyInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+                    case 0:
+                        notifyIntervalG = "";
+                        break;
+                    case 1:
+                        notifyIntervalG = "daily";
+                        break;
+                    case 2:
+                        notifyIntervalG = "weekly";
+                        break;
+                    case 3:
+                        notifyIntervalG = "monthly";
+                        break;
+                    default://Toast.makeText(getApplication(),"No such choice",Toast.LENGTH_SHORT).show();
+                }
 
-        cal=(Button)findViewById(R.id.calendarButton);
-        cal.setOnClickListener(new View.OnClickListener() {
+                Spinner spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
+
+        spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
+        categoryFunc();// category dropDown function
+
+        cal = (Button)findViewById(R.id.calendarButton);
+        cal.setOnClickListener(new View.OnClickListener() {//trigger calendar onClick
 
             @Override
             public void onClick(View view) {
@@ -115,11 +152,11 @@ public class GoalActivity extends AppCompatActivity {
             }
         });
 
+        //calculates and finds current Date
         final Calendar c = Calendar.getInstance();
-        currentYear = c.get(Calendar.YEAR);
-        currentMonth = c.get(Calendar.MONTH);
-        currentDay = c.get(Calendar.DAY_OF_MONTH);
-
+        currentYear = c.get(Calendar.YEAR);// current year
+        currentMonth = c.get(Calendar.MONTH);// current month
+        currentDay = c.get(Calendar.DAY_OF_MONTH);// current date
     }
 
     public void categoryFunc(){ //category DropDown
@@ -175,33 +212,44 @@ public class GoalActivity extends AppCompatActivity {
         });
     }
 
-    protected Dialog onCreateDialog(int id) {
-        switch(id){
-            case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
-        }
-        return null;
-    }
-
     private DatePickerDialog.OnDateSetListener reservationDate = new DatePickerDialog.OnDateSetListener() {
+        // executed onClicked "OK"
         @Override
-        public void onDateSet(DatePicker view, int year, int month, int day){
+        public void onDateSet(DatePicker view, int year, int month, int day){//fetches the date from the calendar
             //Button cal=(Button)findViewById(R.id.calendarButton);
+            view.setMinDate(new Date().getTime());// set min date limit in calendar
             final Calendar c = Calendar.getInstance();
             int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
-            dateG=(Button)findViewById(R.id.calendarButton);
+            dateG = (Button)findViewById(R.id.calendarButton);
             //Picks the selected date, month & year & displays on button
-            if((year > curYear)||(year == curYear && month+1 > curMonth)||(year == curYear && month+1 == curMonth && day > curDay)) {
+            if((year > curYear)||(year == curYear && month+1 > curMonth)||(year == curYear && month+1 == curMonth && day > curDay)) {//if chosen date is greater than current date
                 dayG = Integer.toString(day);
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
                 dateG.setText(Integer.toString(day) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(year));
                 Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
-            }else{
+            }else{// Reset the value on button
+                dateG.setText(R.string.button_calendar);
                 Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
             }
         }
     };
+
+    protected Dialog onCreateDialog(int id) {// create a calendar dialog
+        switch(id){
+            case DATE_DIALOG_ID:
+                //return new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
+                DatePickerDialog dialog = new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);/* {
+                    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth){
+                        view.setMinDate(new Date().getTime());
+                    }
+                };*/
+                dialog.getDatePicker().setMinDate(new Date().getTime());// set Min date in Calendar
+                //dialog.getDatePicker().
+                return dialog;
+        }
+        return null;
+    }
 
     //To save the data in db
     private void saveData(){
@@ -225,6 +273,7 @@ public class GoalActivity extends AppCompatActivity {
         values.put(DbHelperGoal.BREAKDOWN_MONTH, monthB.toString());
         values.put(DbHelperGoal.ALT_PAYMENT,String.valueOf(0));
         values.put(DbHelperGoal.ALT_EXPENSE,String.valueOf(0));
+        values.put(DbHelperGoal.NOTIFICATION_DATE, notifyIntervalG.toString());
 
         System.out.println("");
         if(isUpdate)
@@ -268,6 +317,9 @@ public class GoalActivity extends AppCompatActivity {
             case android.R.id.home://for back button " < " @ action Menu bar
                 onBackPressed();
                 return true;
+            case R.id.calculator:
+                startActivity(new Intent(this, Calc.class));
+                return true;
             case R.id.save_goal://save data
                 goalG=(EditText)findViewById(R.id.goalEntry1);
                 amountG=(EditText)findViewById(R.id.amountEntry2);
@@ -296,8 +348,8 @@ public class GoalActivity extends AppCompatActivity {
 
                 //Toast.makeText(getBaseContext(),monthB.toString(),Toast.LENGTH_LONG).show();
 
-                // Checks if Text box slots are empty or not, if not, save data
-                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !dateG.getText().toString().isEmpty() && !categoryG.equals("")) {
+                // Checks if Text box slots are empty or not, if not, & if category options are chosen or not, then save data
+                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !categoryG.equals("") && !notifyIntervalG.equals("") && !dateG.getText().toString().equals("Set Goal Date")) {
                     //Toast.makeText(getBaseContext(),dateB.toString(),Toast.LENGTH_LONG).show();
                     saveData();
                 }else{// if slots found blank, pop an alert
@@ -312,7 +364,6 @@ public class GoalActivity extends AppCompatActivity {
                     });
                     alertBuilder.create().show();
                 }
-
                 return true;
                 case R.id.categoriesNewG://Category
                     LayoutInflater li = LayoutInflater.from(GoalActivity.this);
@@ -330,35 +381,39 @@ public class GoalActivity extends AppCompatActivity {
                     //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
                     build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            dataBase = cHelper.getWritableDatabase();
-                            Cursor gCursor;
-                            String str = Character.toUpperCase(CatgyValue.getText().toString().charAt(0)) + CatgyValue.getText().toString().substring(1).toLowerCase();//capitalize the string
-                            if(Build.VERSION.SDK_INT > 15) {
-                                gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{str}, null);
-                            }else{
-                                gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
-                            }
-                            String dbData = null;
-                            catgyFlag = 0;
-                            if(gCursor.getCount() > 0){
-                                Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
-                                catgyFlag = 1;
-                            }
-                            //gCursor.close();
-                            //dataBase.close();
-                            if (catgyFlag == 1) {
-                                Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
-                                gCursor.close();
-                                dataBase.close();
+                            if (CatgyValue.getText().toString().isEmpty() || CatgyValue.getText().toString().equals(" ")) {// check is textbox is empty or Not
+                                Toast.makeText(getApplicationContext(), "Enter a category and click", Toast.LENGTH_LONG).show();
                             } else {
-                                ContentValues values = new ContentValues();
-                                values.put(DbHelperCategory.CAT_TYPE, str);
-                                dataBase.insert(DbHelperCategory.TABLE_NAME, null, values);
-                                dataBase.close();
-                                //setContentView(R.layout.activity_goal);
-                                categoryFunc();
-                                Toast.makeText(getApplication(), CatgyValue.getText().toString(), Toast.LENGTH_SHORT).show();
-                                dialog.cancel();
+                                dataBase = cHelper.getWritableDatabase();
+                                Cursor gCursor;
+                                String str = Character.toUpperCase(CatgyValue.getText().toString().charAt(0)) + CatgyValue.getText().toString().substring(1).toLowerCase();//capitalize the string
+                                if (Build.VERSION.SDK_INT > 15) {
+                                    gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{str}, null);
+                                } else {
+                                    gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
+                                }
+                                String dbData = null;
+                                catgyFlag = 0;
+                                if (gCursor.getCount() > 0) {
+                                    Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
+                                    catgyFlag = 1;
+                                }
+                                //gCursor.close();
+                                //dataBase.close();
+                                if (catgyFlag == 1) {
+                                    Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
+                                    gCursor.close();
+                                    dataBase.close();
+                                } else {
+                                    ContentValues values = new ContentValues();
+                                    values.put(DbHelperCategory.CAT_TYPE, str);
+                                    dataBase.insert(DbHelperCategory.TABLE_NAME, null, values);
+                                    dataBase.close();
+                                    //setContentView(R.layout.activity_goal);
+                                    categoryFunc();
+                                    Toast.makeText(getApplication(), CatgyValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                    dialog.cancel();
+                                }
                             }
                         }
                     });

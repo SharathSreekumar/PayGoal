@@ -30,7 +30,7 @@
                 android:text="Large Text"
                 android:id="@+id/GoalInfoTitle1"
                 android:gravity="center|center_vertical"
-                android:textSize="35dp"
+                android:textSize="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -238,11 +238,37 @@
                 android:text="-"
                 android:id="@+id/categoryView2"
                 android:textSize="20dp"
+                android:layout_marginBottom="5dp"
                 android:layout_alignBottom="@+id/categoryView1"
                 android:layout_alignRight="@+id/deadlineInfo1"
                 android:layout_alignEnd="@+id/deadlineInfo1"
                 android:layout_toRightOf="@+id/categoryView1"
                 android:layout_toEndOf="@+id/categoryView1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:gravity="right"
+                android:text="Notification :"
+                android:id="@+id/notifiInt1"
+                android:layout_alignParentBottom="true"
+                android:layout_alignLeft="@+id/categoryView1"
+                android:layout_alignStart="@+id/categoryView1"
+                android:layout_toLeftOf="@+id/categoryView2"
+                android:layout_toStartOf="@+id/categoryView2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="-"
+                android:id="@+id/notifiInt2"
+                android:layout_marginBottom="5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/notifiInt1"
+                android:layout_alignRight="@+id/SavingsInfo2"
+                android:layout_alignEnd="@+id/SavingsInfo2" />
         </RelativeLayout>
     </ScrollView>
     </RelativeLayout>

@@ -275,8 +275,10 @@ public class GoalDisActivity extends AppCompatActivity {
                                                     dialog.cancel();
                                                 }
                                             });
-                                            build2.setNeutralButton("No, only Savings", new DialogInterface.OnClickListener() {
+                                            build2.setNeutralButton("No, Only Savings", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
+
+
                                                     String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                                     dataBase.execSQL(strSQL);
                                                     Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
@@ -945,19 +947,20 @@ public class GoalDisActivity extends AppCompatActivity {
 
                 // For notification
                 // check if goal date is less than or equals 2 days
-                if(count <= 2){// && count >= 0) {
-
+                if(count <= 7){// && count >= 0) {
+                    Toast.makeText(getApplicationContext(),mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)),Toast.LENGTH_LONG).show();
                     notifyLastDay.add(count);
                     notifyTitle.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.GOAL_TITLE)));
                     notifyId.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
                 }
             } while (mCursor.moveToNext());
 
+            //for notification
             Intent viewIntent = new Intent(this, GoalDisActivity.class);
             viewIntent.putExtra("update", true);
             viewIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-
+            //different notification layout for different APIs
             if(Build.VERSION.SDK_INT > 15) {
                 TaskStackBuilder viewStackBuilder = TaskStackBuilder.create(this);
                 viewStackBuilder.addParentStack(MainActivity.class);
@@ -967,6 +970,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 viewPendingIntent = PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             }
 
+            //set the notification layout
             if(notifyLastDay.size() == 1){ // for 1 notification
                 // display goal info
                 Intent resultIntent = new Intent(this, GoalInfoActivity.class);
@@ -1028,8 +1032,9 @@ public class GoalDisActivity extends AppCompatActivity {
 //                extendPendingIntent = PendingIntent.getBroadcast(this, 123, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT);// PendingIntent.FLAG_UPDATE_CURRENT);
 
                 // check if goal date is exceeded, if 2 or less days left, then
-                if(notifyLastDay.get(0) >= 0 && notifyLastDay.get(0) <= 2) {
+                if(notifyLastDay.get(0) >= 0 && notifyLastDay.get(0) <= 7) {
                     String remContent = "";// remContAmt = "Amount Left:" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(amountLeftPay);
+                    Toast.makeText(getApplicationContext(),"asdasd",Toast.LENGTH_LONG).show();
                     if(notifyLastDay.get(0) == 1)
                         remContent = String.valueOf(notifyLastDay.get(0)) + " day left";
                     else
@@ -1105,13 +1110,14 @@ public class GoalDisActivity extends AppCompatActivity {
                 AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                 // open the activity every 24 hours
                 //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000 , viewPendingIntent);
-                //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , viewPendingIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , viewPendingIntent);
 
                 gBuilder.setAutoCancel(true);
                 int mNotificationId = 10;
                 //keyIndex = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
                 // Gets an instance of the NotificationManager service
-                //myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
                 // Builds the notification and issues it.
                 myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
             }
@@ -1138,6 +1144,9 @@ public class GoalDisActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id){
+            case R.id.calculator:
+                startActivity(new Intent(this,Calc.class));
+                return true;
             case R.id.categoriesNewGD:
                 LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
                 View promptsCategoryView = li.inflate(R.layout.category_layout, null);

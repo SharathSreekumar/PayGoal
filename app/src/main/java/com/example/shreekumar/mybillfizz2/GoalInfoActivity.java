@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class GoalInfoActivity extends AppCompatActivity {
-    TextView GoalInfoTitle, Payment, Expense, Savings, DailyAmount, WeeklyAmount, MonthlyAmount, DaysToGoal, CategoryInfo;
+    TextView GoalInfoTitle, Payment, Expense, Savings, DailyAmount, WeeklyAmount, MonthlyAmount, DaysToGoal, CategoryInfo, NotifInfo;
     public static String GoalId, amount, CategoryId;
     private DbHelperGoal iHelper;
     private SQLiteDatabase iDataBase;
@@ -40,6 +40,7 @@ public class GoalInfoActivity extends AppCompatActivity {
         MonthlyAmount = (TextView)findViewById(R.id.monthlyInfoView1);
         DaysToGoal = (TextView)findViewById(R.id.deadlineInfo1);
         CategoryInfo = (TextView)findViewById(R.id.categoryView2);
+        NotifInfo = (TextView)findViewById(R.id.notifiInt2);
         displayData();
     }
 
@@ -111,6 +112,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                 Expense.setText("-" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
                 Savings.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE))));
                 CategoryInfo.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CATEGORY)));
+                NotifInfo.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.NOTIFICATION_DATE)));
                 //wordList.put(DbHelperGoal.ALT_EXPENSE,mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
                 //Toast.makeText(getBaseContext(),monStr.get(mCursor.getColumnIndex(DbHelperGoal.MONTH)),Toast.LENGTH_SHORT).show();
                 //Displays goal amount && currency
