@@ -116,7 +116,7 @@ public class GoalActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        notifyIntervalG = "";
+                        notifyIntervalG = "none";// replaced blank space with 'none' -> option for user to not choose notification
                         break;
                     case 1:
                         notifyIntervalG = "daily";
@@ -130,7 +130,7 @@ public class GoalActivity extends AppCompatActivity {
                     default://Toast.makeText(getApplication(),"No such choice",Toast.LENGTH_SHORT).show();
                 }
 
-                Spinner spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
+                //Spinner spinnerCat = (Spinner) findViewById(R.id.categoryDrop);
 
             }
 
@@ -157,6 +157,7 @@ public class GoalActivity extends AppCompatActivity {
         currentYear = c.get(Calendar.YEAR);// current year
         currentMonth = c.get(Calendar.MONTH);// current month
         currentDay = c.get(Calendar.DAY_OF_MONTH);// current date
+
     }
 
     public void categoryFunc(){ //category DropDown
@@ -239,13 +240,15 @@ public class GoalActivity extends AppCompatActivity {
         switch(id){
             case DATE_DIALOG_ID:
                 //return new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
-                DatePickerDialog dialog = new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);/* {
+                DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK, reservationDate, currentYear, currentMonth, currentDay) {
                     public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth){
                         view.setMinDate(new Date().getTime());
                     }
-                };*/
+                };
+
                 dialog.getDatePicker().setMinDate(new Date().getTime());// set Min date in Calendar
-                //dialog.getDatePicker().
+                //Calendar calendar = Calendar.getInstance();
+                //dialog.getDatePicker().setMinDate(calendar.getTimeInMillis());// set Min date in Calendar
                 return dialog;
         }
         return null;
@@ -410,7 +413,7 @@ public class GoalActivity extends AppCompatActivity {
                                     dataBase.insert(DbHelperCategory.TABLE_NAME, null, values);
                                     dataBase.close();
                                     //setContentView(R.layout.activity_goal);
-                                    categoryFunc();
+                                    categoryFunc();// to update the Category Spinner
                                     Toast.makeText(getApplication(), CatgyValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                     dialog.cancel();
                                 }

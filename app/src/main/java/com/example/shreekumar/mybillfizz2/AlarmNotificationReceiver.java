@@ -95,9 +95,9 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("Tag:", "Alarm Notification received");
-        Toast.makeText(context,"Alarm created2",Toast.LENGTH_LONG).show();
+        //Toast.makeText(context,"Alarm created2",Toast.LENGTH_LONG).show();
 
-//        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz");
+//        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Fizz");
 //        gBuilder.setStyle(new NotificationCompat.InboxStyle().addLine("Time's up"));
 //        gBuilder.setGroup("My Goals");
 //        gBuilder.setGroupSummary(true);
@@ -138,6 +138,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 
         myGoalNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         myGoalNotifyMgr.cancelAll();
+
         if (mCursor.moveToFirst()) {
             do {
                 keyId.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
@@ -191,7 +192,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 // For notification
                 // check if goal date is less than or equals 2 days
                 String tempNotif = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.NOTIFICATION_DATE));
-                int notifCnt = 1;
+                int notifCnt = Integer.MAX_VALUE; // set value to max
                 if(tempNotif == "daily")
                     notifCnt = 1;
                 else if(tempNotif == "weekly")
@@ -282,18 +283,22 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                     String remContent = "";
                     if(notifyLastDay.get(0) == 1)
                         remContent = String.valueOf(notifyLastDay.get(0)) + " day left";
+                    else if(notifyLastDay.get(0) == -1)
+                        remContent = String.valueOf("Time's up");
                     else
                         remContent = String.valueOf(notifyLastDay.get(0)) + " days left";
-                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText("Goals: " + notifyTitle.get(0)).addAction(R.mipmap.money_transfer, "Contribute", savePendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Fizz").setContentText("Goals: " + notifyTitle.get(0)).addAction(R.mipmap.money_transfer, "Contribute", savePendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
                     gBuilder.setContentIntent(resultPendingIntent);
                     gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(notifyTitle.get(0)).addLine(remContent));
                 }else if(notifyLastDay.get(0) == -1){ // Goals that are Timed out
                     String remContent = notifyTitle.get(0);
                     int cnt = notifyLastDay.size();
-                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText("Goals : " + remContent).addAction(R.mipmap.tear_calendar, "Extend", extendPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Fizz").setContentText("Goals : " + remContent).addAction(R.mipmap.tear_calendar, "Extend", extendPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    //gBuilder.setLargeIcon();
                     gBuilder.setContentIntent(resultPendingIntent);
                     gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(remContent).addLine("Time's up"));
                 }
+
                 gBuilder.setGroup("My Goals");
                 gBuilder.setGroupSummary(true);
                 gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
@@ -307,7 +312,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 
                 // opens the resultPendingIntent
                 //getSystemService(NOTIFICATION_SERVICE) -> context.getSystemService(Context.NOTIFICATION_SERVICE) coz it is not an activity class, & context is directed from Activity class
-                AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                //AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
                 // open the activity every 24 hours
                 //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, resultPendingIntent);
 
@@ -318,24 +323,39 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 //getSystemService(NOTIFICATION_SERVICE) -> context.getSystemService(Context.NOTIFICATION_SERVICE) coz it is not an activity class, & context is directed from Activity class
                 myGoalNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 // Builds the notification and issues it.
+                int color = Color.rgb(131,158,46);
+                gBuilder.setColor(color);
+
                 myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
             } else if(notifyLastDay.size() > 1) { //many
                 int cnt = notifyLastDay.size();
                 Toast.makeText(context, String.valueOf(cnt), Toast.LENGTH_LONG).show();
                 //NotificationCompat.Builder(this) -> NotificationCompat.Builder(context) as this is not an Activity class
-                gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.wizard_w).setContentTitle("Fizz").setContentText(String.valueOf(cnt) + "goals");
+                gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Fizz").setContentText(String.valueOf(cnt) + "goals");
                 gBuilder.setContentIntent(viewPendingIntent);
                 String summary = String.valueOf(cnt) + " goals";
 
                 //gBuilder.setStyle(new NotificationCompat.InboxStyle().addLine(notifyTitle.get(0) + " - " + notifyLastDay.get(0) + " days left").addLine(notifyTitle.get(1) + " - " + notifyLastDay.get(1) + " days left").setSummaryText(summary));
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-                if(cnt <= 3)// if only 3 near date goals, show all
-                    for(int i = 0; i < cnt; i++)
-                        inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " days left");
-                else// show only 3 of 'n'
-                    for(int i = 0; i < 3; i++)
-                        inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " days left");
+                if (cnt <= 7)// if only 7 near date goals, show all
+                    for (int i = 0; i < cnt; i++) {
+                        if(Integer.valueOf(notifyLastDay.get(i)) == 1)
+                            inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " day left");
+                        else if(Integer.valueOf(notifyLastDay.get(i)) == -1)
+                            inboxStyle.addLine(notifyTitle.get(i) + " - Time's up");
+                        else
+                            inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " days left");
+                    }
+                else// show only 7 of 'n'
+                    for (int i = cnt - 7; i < cnt; i++) {
+                        if(Integer.valueOf(notifyLastDay.get(i)) == 1)
+                            inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " day left");
+                        else if(Integer.valueOf(notifyLastDay.get(i)) == -1)
+                            inboxStyle.addLine(notifyTitle.get(i) + " - Time's up");
+                        else
+                            inboxStyle.addLine(notifyTitle.get(i) + " - " + notifyLastDay.get(i) + " days left");
+                    }
                 inboxStyle.setSummaryText(summary);
                 gBuilder.setStyle(inboxStyle);
 
@@ -358,6 +378,8 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 gBuilder.setAutoCancel(true);
                 int mNotificationId = 10;
                 // Builds the notification and issues it.
+                int color = 0xff123456;
+                gBuilder.setColor(color);
                 myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
             }
         }
